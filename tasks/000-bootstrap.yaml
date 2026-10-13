@@ -1,7 +1,7 @@
 id: "000"
 title: Bootstrap the app inside the harness
 type: harness
-status: ready
+status: done
 goal: >
   Scaffold the Next.js app into this repo without disturbing the harness files, install the toolchain,
   wire the harness lint/boundary/style configs, and get `pnpm verify --full` reporting real results
@@ -25,15 +25,20 @@ scope:
     - "tests/unit/**"
     - "docs/references/**"
     - "plans/**"
+    - "tasks/000-bootstrap.yaml"
     - ".gitignore"
     - ".github/workflows/verify.yml"
+    - "tokens/semantic.json"
+    - "vercel.json"
   deny:
     - "CLAUDE.md"
     - "docs/DESIGN.md"
     - "docs/STORY.md"
     - "scripts/**"
     - ".claude/**"
-    - "tokens/**"
+    - "tokens/base/**"
+    - "tokens/build.mjs"
+    - "tokens/motion.json"
 
 constraints:
   - Use pnpm. Node version from .nvmrc.

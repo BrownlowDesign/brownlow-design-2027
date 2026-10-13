@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "../styles/generated/tokens.css";
+
+@theme inline {
+  --color-surface: var(--color-surface-default);
+  --color-surface-inverse: var(--color-surface-inverse);
+  --color-ink: var(--color-text-default);
+  --color-ink-muted: var(--color-text-muted);
+  --color-ink-inverse: var(--color-text-inverse);
+  --color-accent: var(--color-accent-default);
+  --color-border: var(--color-border-subtle);
+  --font-family-sans: var(--font-family-sans);
+  --font-family-mono: var(--font-family-mono);
+}
