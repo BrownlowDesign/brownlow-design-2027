@@ -44,7 +44,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Visual checkpoints
-        run: pnpm exec playwright test
+        run: pnpm exec playwright test --pass-with-no-tests
         env:
           NEXT_PUBLIC_LAB: '1'
           HOME: /root

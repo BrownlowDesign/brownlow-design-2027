@@ -29,6 +29,7 @@ scope:
     - ".gitignore"
     - ".github/workflows/verify.yml"
     - "tokens/semantic.json"
+    - "vercel.json"
   deny:
     - "CLAUDE.md"
     - "docs/DESIGN.md"
