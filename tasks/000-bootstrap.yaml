@@ -1,7 +1,7 @@
 id: "000"
 title: Bootstrap the app inside the harness
 type: harness
-status: active
+status: done
 goal: >
   Scaffold the Next.js app into this repo without disturbing the harness files, install the toolchain,
   wire the harness lint/boundary/style configs, and get `pnpm verify --full` reporting real results
