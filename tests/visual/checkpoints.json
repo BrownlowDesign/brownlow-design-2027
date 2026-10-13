@@ -1,4 +1,12 @@
 {
   "$comment": "Every entry × progress × tier × viewport becomes a screenshot test. Add one for every route, section, and scroll scene. Optional: t (clock time, default 0), transition + tp, scene + sp.",
-  "checkpoints": []
+  "checkpoints": [
+    {
+      "name": "lab-clock",
+      "route": "/lab/clock",
+      "t": [0, 1, 2.5],
+      "progress": [0],
+      "tiers": ["full", "reduced", "static"]
+    }
+  ]
 }

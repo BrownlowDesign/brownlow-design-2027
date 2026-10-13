@@ -1,7 +1,7 @@
 id: "001"
 title: Harness runtime — clock, harness mode, tiers, snap
 type: harness
-status: ready
+status: active
 depends_on: ["000"]
 goal: >
   Implement the motion runtime the rest of the site depends on: the single clock, harness mode URL params,
