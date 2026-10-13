@@ -1,0 +1,14 @@
+{
+  "ignoreFiles": ["src/styles/generated/**", ".next/**", "node_modules/**"],
+  "rules": {
+    "color-no-hex": [true, { "message": "Raw hex color. Use var(--color-…) from src/styles/generated/tokens.css (add a token in tokens/ if missing)." }],
+    "color-named": ["never", { "message": "Named color. Use var(--color-…) from the token CSS." }],
+    "function-disallowed-list": [["rgb", "rgba", "hsl", "hsla", "oklch", "oklab", "lab", "lch"], { "message": "Raw color function. Use var(--color-…) from the token CSS." }],
+    "declaration-property-unit-disallowed-list": [
+      {
+        "/^(transition|animation)/": ["ms", "s"]
+      },
+      { "message": "Raw duration in CSS. Use var(--motion-duration-…) from the token CSS." }
+    ]
+  }
+}

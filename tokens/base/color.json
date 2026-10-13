@@ -1,0 +1,22 @@
+{
+  "color": {
+    "$type": "color",
+    "$description": "PLACEHOLDER palette for the motion lab. Replaced in task 010 from docs/DESIGN.md.",
+    "ink": {
+      "50": { "$value": "#f4f3f0" },
+      "100": { "$value": "#e6e4df" },
+      "300": { "$value": "#a8a49b" },
+      "500": { "$value": "#6b675f" },
+      "700": { "$value": "#34322e" },
+      "900": { "$value": "#121110" }
+    },
+    "signal": {
+      "500": { "$value": "#ff5a1f" }
+    },
+    "lab": {
+      "a": { "$value": "#3b82f6", "$description": "Lab-only: distinguishes variant A" },
+      "b": { "$value": "#10b981", "$description": "Lab-only: distinguishes variant B" },
+      "c": { "$value": "#f59e0b", "$description": "Lab-only: distinguishes variant C" }
+    }
+  }
+}

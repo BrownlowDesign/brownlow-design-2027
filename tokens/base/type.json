@@ -1,0 +1,28 @@
+{
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "sans": { "$value": ["Inter", "system-ui", "sans-serif"], "$description": "PLACEHOLDER" },
+      "mono": { "$value": ["JetBrains Mono", "ui-monospace", "monospace"], "$description": "PLACEHOLDER" }
+    },
+    "size": {
+      "$type": "dimension",
+      "$description": "PLACEHOLDER 1.25 ratio from 16px.",
+      "sm": { "$value": "13px" },
+      "base": { "$value": "16px" },
+      "lg": { "$value": "20px" },
+      "xl": { "$value": "25px" },
+      "2xl": { "$value": "31px" },
+      "3xl": { "$value": "39px" },
+      "4xl": { "$value": "49px" },
+      "5xl": { "$value": "61px" },
+      "6xl": { "$value": "76px" }
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "regular": { "$value": 400 },
+      "medium": { "$value": 500 },
+      "bold": { "$value": 700 }
+    }
+  }
+}

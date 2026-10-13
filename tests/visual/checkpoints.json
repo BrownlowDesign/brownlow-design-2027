@@ -1,0 +1,4 @@
+{
+  "$comment": "Every entry × progress × tier × viewport becomes a screenshot test. Add one for every route, section, and scroll scene. Optional: t (clock time, default 0), transition + tp, scene + sp.",
+  "checkpoints": []
+}

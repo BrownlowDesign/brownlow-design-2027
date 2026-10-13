@@ -1,0 +1,60 @@
+id: "001"
+title: Harness runtime — clock, harness mode, tiers, snap
+type: harness
+status: ready
+depends_on: ["000"]
+goal: >
+  Implement the motion runtime the rest of the site depends on: the single clock, harness mode URL params,
+  tier detection, window.__HARNESS__, and a demo lab page that proves screenshots are deterministic.
+  Enable the visual check.
+
+read_first:
+  - docs/MOTION.md
+  - docs/TESTING.md
+
+scope:
+  allow:
+    - "src/motion/**"
+    - "src/app/layout.tsx"
+    - "src/app/lab/**"
+    - "src/gl/CanvasRoot.tsx"
+    - "tests/unit/**"
+    - "tests/visual/checkpoints.json"
+    - "plans/**"
+  deny:
+    - "scripts/**"
+    - "tokens/**"
+    - "tests/visual/__screenshots__/**"
+
+constraints:
+  - "No scroll/transition libraries yet. Harness `progress` uses native window.scrollTo for now; ADR-0002 will swap the implementation behind the same API."
+  - "Harness code loads via dynamic import only when ?harness=1 is present; confirm it's absent from the production home page bundle."
+  - "src/gl/CanvasRoot.tsx: a minimal R3F Canvas mounted in the root layout, frameloop driven by the clock, not rendered in static tier. One fullscreen quad with a placeholder shader using uTime — enough to prove determinism."
+  - "__HARNESS__.ready must wait for: document.fonts.ready, all images decoded, and two canvas frames rendered after the clock is set."
+
+deliverables:
+  - "src/motion/clock.ts, harness.ts (param parsing + __HARNESS__), tier.ts, MotionProvider.tsx, presets.ts"
+  - "/lab/clock — an animated DOM element + the canvas quad, both driven by clock time"
+  - "tests/unit: clock freeze/set behavior, param parsing, tier resolution"
+  - "checkpoints.json entry for /lab/clock at t=[0,1,2.5] × all tiers"
+
+done_when:
+  - check: "Two consecutive `pnpm snap /lab/clock --t=1.5 --tier=full` runs produce byte-identical PNGs"
+    evidence: "both paths + sha256 in plan"
+  - check: "Snaps at t=0 and t=2.5 differ (animation actually runs off the clock)"
+    evidence: snap paths
+  - check: "static tier snap shows no canvas; reduced tier shows a non-animating frame"
+    evidence: snap paths
+  - check: "pnpm visual:docker --update-snapshots produces initial baselines; Ryan approves them"
+    by: ryan
+  - check: "pnpm verify --full --task=001 passes with visual enabled"
+    evidence: artifacts/verify.json
+  - check: "Production build of / does not include harness.ts (search the .next build output for a unique string from it)"
+    evidence: "command output in plan"
+
+escalate_when:
+  - Determinism can't be achieved because of something outside src/motion (fonts, Next behavior, R3F internals) — write up what's nondeterministic and the evidence
+  - snap.mjs needs a change to work
+
+budget:
+  max_retries_per_check: 3

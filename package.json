@@ -1,0 +1,23 @@
+{
+  "name": "brownlow-design",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.18.0",
+  "scripts": {
+    "dev": "pnpm tokens:build && next dev",
+    "build": "pnpm tokens:build && next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "tokens:build": "node tokens/build.mjs",
+    "boundaries": "depcruise src --config .dependency-cruiser.cjs --output-type err-long",
+    "verify": "node scripts/verify.mjs",
+    "snap": "node scripts/snap.mjs",
+    "perf": "node scripts/perf.mjs",
+    "shaders": "node scripts/shader-check.mjs",
+    "visual": "playwright test",
+    "visual:update": "playwright test --update-snapshots",
+    "visual:docker": "bash scripts/visual-docker.sh"
+  }
+}

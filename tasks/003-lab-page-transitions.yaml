@@ -1,0 +1,80 @@
+id: "003"
+title: Lab — choose the page transition approach
+type: lab
+status: ready
+depends_on: ["002"]
+goal: >
+  Prototype page transitions in the App Router and choose an approach with evidence. Output is ADR-0003
+  and a transition API in src/motion/transitions/ that routes use without knowing the implementation.
+
+read_first:
+  - docs/MOTION.md#page-transitions
+  - docs/decisions/0002-scroll-engine.md
+  - docs/references/next-llms.txt
+
+scope:
+  allow:
+    - "src/motion/**"
+    - "src/app/layout.tsx"
+    - "src/app/lab/transitions/**"
+    - "src/gl/**"
+    - "tests/**"
+    - "docs/decisions/0003-*.md"
+    - "docs/references/**"
+    - "next.config.*"
+    - "package.json"
+    - "pnpm-lock.yaml"
+    - "plans/**"
+  deny:
+    - "scripts/**"
+    - "tests/visual/__screenshots__/**"
+
+constraints:
+  - |
+    Test routes (shared by all variants): /lab/transitions/<variant> (index grid of 6 project cards)
+    and /lab/transitions/<variant>/[slug] (case-study page with a hero image, long scroll, and one scroll scene from 002).
+  - |
+    Cases every variant must handle:
+      1. Index → case study: card image morphs into the case-study hero (shared element)
+      2. Case study → index via back button: reverse morph, index scroll position restored
+      3. Interrupted navigation: click a second card mid-transition
+      4. Deep link / refresh on a case study: no transition, correct state
+      5. Canvas continuity: the canvas quad never unmounts; its uTransition uniform animates 0→1 across the transition
+      6. Scroll engine re-initializes correctly on the new page (002's scenes work after navigation)
+  - |
+    Variants:
+      A: View Transitions API (React <ViewTransition> / Next's view transition support — check docs/references for current status)
+      B: Motion AnimatePresence + layout animations with a frozen-router pattern in a template.tsx
+      C: Overlay/orchestrated: persistent layout, transition timeline (on the 002 engine) covers → route change → reveals; shared element via FLIP
+  - "Harness mode: ?transition=<name>&tp=0.5 renders the transition frozen at 50% for snapshots."
+  - "Reduced tier: crossfade only. Static tier: instant navigation."
+
+deliverables:
+  - "Three variants under /lab/transitions/<a|b|c>"
+  - "Playwright interaction tests for cases 2, 3, 4, 6 per variant (tests/visual/transitions.spec.ts or tests/e2e)"
+  - "Snaps at tp=0, .25, .5, .75, 1 for case 1 per variant"
+  - "Comparison table in plan: case pass/fail matrix, perf during transition, JS added, complexity (files/lines touched in app/), Safari/Firefox support, failure modes"
+  - "docs/decisions/0003-page-transitions.md (status: proposed)"
+  - "src/motion/transitions/ public API implemented on the winner, with a <TransitionLink> component"
+
+done_when:
+  - check: "Case matrix complete for all variants with evidence per cell"
+    evidence: "plan table + test results"
+  - check: "Canvas never unmounts across 20 navigations (WebGL context id stable, no context-lost events) for the winning variant"
+    evidence: "test output"
+  - check: "Heap growth across 20 navigations within docs/budgets.json memory budget for the winning variant"
+    evidence: "artifacts/perf/*.json"
+  - check: "Ryan clicks through all three on a Vercel preview and records a preference"
+    by: ryan
+  - check: "ADR-0003 accepted by Ryan"
+    by: ryan
+  - check: "pnpm verify --full --task=003 passes"
+    evidence: artifacts/verify.json
+
+escalate_when:
+  - A variant requires patching Next.js internals or relying on undocumented router behavior
+  - Shared-element morph can't coexist with the 002 scroll engine without fighting it
+  - Back/forward scroll restoration can't be made reliable
+
+budget:
+  max_retries_per_check: 3

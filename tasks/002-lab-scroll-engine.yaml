@@ -1,0 +1,75 @@
+id: "002"
+title: Lab — choose the scroll engine
+type: lab
+status: ready
+depends_on: ["001"]
+goal: >
+  Build the same scroll test scene three ways and choose the engine behind useScrollScene() with evidence.
+  The output is ADR-0002 plus a working useScrollScene() on the winner. The losing variants stay under
+  /lab/scroll/* until Ryan accepts the ADR, then get deleted.
+
+read_first:
+  - docs/MOTION.md
+  - docs/budgets.json
+  - docs/decisions/TEMPLATE.md
+
+scope:
+  allow:
+    - "src/motion/**"
+    - "src/app/lab/scroll/**"
+    - "src/gl/**"
+    - "tests/**"
+    - "docs/decisions/0002-*.md"
+    - "docs/references/**"
+    - "package.json"
+    - "pnpm-lock.yaml"
+    - "plans/**"
+  deny:
+    - "scripts/**"
+    - "tests/visual/__screenshots__/**"
+
+constraints:
+  - |
+    Identical test scene for every variant (placeholder tokens, no polish):
+      1. Pinned section, 3-stage sequence over 200% viewport: headline splits by line → image scales from card to full-bleed → caption fades in
+      2. Parallax stack of 3 layers at different rates
+      3. Horizontal scroll-jacked strip of 5 cards inside vertical scroll
+      4. A shader uniform (uProgress) on the canvas quad driven by section progress
+      5. Text reveal on enter (not scrubbed) using a motion preset
+  - |
+    Variants:
+      A: /lab/scroll/a — Lenis + GSAP ScrollTrigger (GSAP ticker driven by our clock)
+      B: /lab/scroll/b — Native: CSS scroll-driven animations (animation-timeline: view()/scroll()) + IntersectionObserver, minimal JS
+      C: /lab/scroll/c — Motion (motion.dev) useScroll/useTransform, native scroll
+  - "Every variant must support harness mode: ?progress= puts every timeline at the exact state, and snaps are deterministic."
+  - "Library code only inside src/motion/engines/<variant>/. Pages use a thin per-variant adapter."
+
+deliverables:
+  - "Three lab routes with the identical scene"
+  - "checkpoints.json entries for each variant (progress 0, .25, .5, .75, 1 × 3 tiers)"
+  - "A comparison table in the plan: determinism, perf (p95/max/long frames desktop + mobile emulation), JS added (kb), reduced/static support, iOS Safari notes, ergonomics of the useScrollScene adapter, how it composes with page transitions (forward-looking risk)"
+  - "docs/decisions/0002-scroll-engine.md (status: proposed)"
+  - "useScrollScene() implemented on the recommended engine; harness `progress` routed through it"
+  - "docs/references entry for the chosen library"
+
+done_when:
+  - check: "All three variants pass deterministic double-snap at progress 0.5 (identical hashes)"
+    evidence: "hashes in plan"
+  - check: "pnpm perf run for each variant, desktop and mobile; results in the comparison table"
+    evidence: "artifacts/perf/*.json"
+  - check: "Visual reviewer confirms the three variants render the same scene at each checkpoint (mechanics parity, not polish)"
+    by: reviewer
+  - check: "Ryan scrolls all three on a Vercel preview (desktop + his phone) and records a preference in the plan"
+    by: ryan
+  - check: "ADR-0002 written with evidence links; Ryan marks it accepted"
+    by: ryan
+  - check: "pnpm verify --full --task=002 passes"
+    evidence: artifacts/verify.json
+
+escalate_when:
+  - A variant can't be made deterministic in harness mode — record why; that's a finding, not a reason to drop it silently
+  - Results are within noise of each other on every criterion — present the tradeoff and ask
+  - A fourth option looks clearly better partway through
+
+budget:
+  max_retries_per_check: 3

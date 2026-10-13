@@ -1,0 +1,32 @@
+{
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "$description": "PLACEHOLDER. Motion personality is defined in docs/DESIGN.md (task 010).",
+      "instant": { "$value": "0ms" },
+      "fast": { "$value": "160ms" },
+      "base": { "$value": "320ms" },
+      "slow": { "$value": "640ms" },
+      "page": { "$value": "900ms", "$description": "Page transitions" }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": { "$value": [0.2, 0, 0, 1] },
+      "enter": { "$value": [0, 0, 0.2, 1] },
+      "exit": { "$value": [0.4, 0, 1, 1] },
+      "weighted": { "$value": [0.7, 0, 0.2, 1], "$description": "Slow-in, slow-out for large surfaces" }
+    },
+    "stagger": {
+      "$type": "duration",
+      "line": { "$value": "60ms" },
+      "item": { "$value": "40ms" }
+    }
+  },
+  "gl": {
+    "dpr": {
+      "$type": "number",
+      "max": { "$value": 2 },
+      "max-mobile": { "$value": 1.5 }
+    }
+  }
+}

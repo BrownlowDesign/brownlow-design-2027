@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Task contract",
+  "type": "object",
+  "required": ["id", "title", "type", "goal", "scope", "done_when", "escalate_when"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[0-9]{3}$" },
+    "title": { "type": "string" },
+    "type": { "enum": ["harness", "lab", "feature", "content", "gardening", "fix"] },
+    "status": { "enum": ["ready", "blocked", "active", "done", "abandoned"], "default": "ready" },
+    "goal": { "type": "string", "description": "One paragraph: the outcome, not the steps." },
+    "depends_on": { "type": "array", "items": { "type": "string" } },
+    "read_first": { "type": "array", "items": { "type": "string" }, "description": "Docs to load before starting. Keep it short." },
+    "scope": {
+      "type": "object",
+      "required": ["allow"],
+      "properties": {
+        "allow": { "type": "array", "items": { "type": "string" }, "description": "Globs the task may change." },
+        "deny": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "constraints": { "type": "array", "items": { "type": "string" } },
+    "deliverables": { "type": "array", "items": { "type": "string" } },
+    "done_when": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["check"],
+        "properties": {
+          "check": { "type": "string", "description": "Objective condition." },
+          "evidence": { "type": "string", "description": "How to prove it: command, check id, or artifact path." },
+          "by": { "enum": ["machine", "reviewer", "ryan"], "default": "machine" }
+        }
+      }
+    },
+    "escalate_when": { "type": "array", "items": { "type": "string" } },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "max_retries_per_check": { "type": "integer", "default": 3 }
+      }
+    }
+  }
+}

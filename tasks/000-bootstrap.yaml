@@ -1,0 +1,76 @@
+id: "000"
+title: Bootstrap the app inside the harness
+type: harness
+status: ready
+goal: >
+  Scaffold the Next.js app into this repo without disturbing the harness files, install the toolchain,
+  wire the harness lint/boundary/style configs, and get `pnpm verify --full` reporting real results
+  (no `not_configured` except `visual`, which task 001 enables). Populate docs/references for installed libraries.
+
+read_first:
+  - CLAUDE.md
+  - docs/ARCHITECTURE.md
+  - docs/TESTING.md
+
+scope:
+  allow:
+    - "package.json"
+    - "pnpm-lock.yaml"
+    - "next.config.*"
+    - "tsconfig.json"
+    - "postcss.config.*"
+    - "eslint.config.mjs"
+    - "vitest.config.*"
+    - "src/**"
+    - "tests/unit/**"
+    - "docs/references/**"
+    - "plans/**"
+    - ".gitignore"
+    - ".github/workflows/verify.yml"
+  deny:
+    - "CLAUDE.md"
+    - "docs/DESIGN.md"
+    - "docs/STORY.md"
+    - "scripts/**"
+    - ".claude/**"
+    - "tokens/**"
+
+constraints:
+  - Use pnpm. Node version from .nvmrc.
+  - "create-next-app refuses non-empty dirs: scaffold into a temp dir (TypeScript, Tailwind, App Router, src/ dir, ESLint, no Turbopack opt-outs needed) and move files in. Do not overwrite existing harness files; merge package.json scripts — the harness scripts already in package.json win."
+  - "Dev deps to add: style-dictionary, yaml, @playwright/test, vitest, dependency-cruiser, stylelint, zod. Runtime: three, @react-three/fiber, @react-three/drei. Do NOT add scroll or transition libraries (gsap, lenis, motion) — labs decide those."
+  - "eslint.config.mjs must spread the exports of eslint.harness.mjs after Next's config. Don't weaken or disable any harness rule."
+  - "Map Tailwind theme colors/spacing/fonts to the CSS variables in src/styles/generated/tokens.css. Import that file in the root layout's global CSS."
+  - "Add src/app/lab/layout.tsx that calls notFound() when process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_LAB !== '1'."
+  - Strict TypeScript (strict, noUncheckedIndexedAccess).
+  - "Pin typescript to ^6 for now: typescript-eslint (used by Next's ESLint config) does not support TypeScript 7 yet. Record this in docs/references and revisit when it does."
+  - "vitest.config.ts must include only tests/unit/** (the Playwright specs in tests/visual must not run under Vitest)."
+  - "Set the Playwright image tag in .github/workflows/verify.yml to match the installed @playwright/test version."
+  - "Run `pnpm exec playwright install chromium` so snap/shaders/perf work locally."
+
+deliverables:
+  - Working Next.js app at src/app with a placeholder home page using only tokens
+  - "src/app/lab/page.tsx: an index listing lab routes (empty list for now)"
+  - eslint.config.mjs including harness rules
+  - docs/references/* for next, r3f, drei, style-dictionary, playwright (versions recorded)
+  - One unit test in tests/unit proving the token TS output exports at least one color
+
+done_when:
+  - check: "pnpm verify --full reports pass for tokens, typecheck, lint, styles, boundaries, unit, shaders"
+    evidence: artifacts/verify.json
+  - check: "visual reports not_configured (enabled in 001) and nothing else does"
+    evidence: artifacts/verify.json
+  - check: "Harness lint rules fire: a temporary file with a raw hex color in src/components fails lint with the remediation message; file removed afterwards"
+    evidence: "lint output pasted in the plan"
+  - check: "pnpm build succeeds; /lab returns 404 when built with NODE_ENV=production and no NEXT_PUBLIC_LAB"
+    evidence: "command output in the plan"
+  - check: "git diff shows no changes to denied paths"
+    evidence: "pnpm verify --task=000 scope check"
+
+escalate_when:
+  - A harness script needs changing to work (scripts/** is out of scope — explain what and why)
+  - A harness lint rule conflicts with Next.js-generated code in a way that can't be fixed in src/
+  - Any dependency install requires a major-version choice not covered above
+
+budget:
+  max_retries_per_check: 3

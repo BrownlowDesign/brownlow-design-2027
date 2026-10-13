@@ -1,0 +1,26 @@
+{
+  "$comment": "Performance budgets. perf.mjs compares against these. p95 allows normal vsync jitter at 60Hz; a dropped frame shows up as ~33ms. Tighten after the lab; never loosen without an ADR.",
+  "frame": {
+    "p95_ms": 18.5,
+    "max_ms": 50,
+    "long_frames_over_32ms_max": 3
+  },
+  "mobile_frame": {
+    "p95_ms": 22,
+    "max_ms": 66,
+    "long_frames_over_32ms_max": 6
+  },
+  "bundle": {
+    "first_load_js_kb_max": 220,
+    "lab_route_js_kb_max": 400
+  },
+  "lighthouse": {
+    "performance_min": 85,
+    "accessibility_min": 95,
+    "lcp_ms_max": 2500,
+    "cls_max": 0.05
+  },
+  "memory": {
+    "heap_growth_after_20_navigations_mb_max": 15
+  }
+}

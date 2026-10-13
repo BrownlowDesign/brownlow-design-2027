@@ -1,0 +1,20 @@
+{
+  "color": {
+    "$type": "color",
+    "surface": {
+      "default": { "$value": "{color.ink.50}", "$description": "Page background" },
+      "inverse": { "$value": "{color.ink.900}", "$description": "Dark sections, behind shaders" }
+    },
+    "text": {
+      "default": { "$value": "{color.ink.900}" },
+      "muted": { "$value": "{color.ink.500}" },
+      "inverse": { "$value": "{color.ink.50}" }
+    },
+    "accent": {
+      "default": { "$value": "{color.signal.500}" }
+    },
+    "border": {
+      "subtle": { "$value": "{color.ink.100}" }
+    }
+  }
+}

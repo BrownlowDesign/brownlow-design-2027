@@ -1,0 +1,58 @@
+id: "005"
+title: Lab — tiers, real-device budgets, CI regression gates
+type: lab
+status: ready
+depends_on: ["004"]
+goal: >
+  Harden tier detection and set budgets from measured reality. Combine 002–004 winners into one
+  /lab/integration page (scroll scenes + transition + two shader scenes), measure on real devices,
+  tighten docs/budgets.json, and make CI fail on regressions.
+
+read_first:
+  - docs/MOTION.md#tiers
+  - docs/budgets.json
+  - docs/TESTING.md
+
+scope:
+  allow:
+    - "src/motion/tier.ts"
+    - "src/app/lab/integration/**"
+    - "src/**"
+    - "tests/**"
+    - "docs/budgets.json"
+    - "docs/decisions/0005-*.md"
+    - ".github/workflows/**"
+    - "plans/**"
+  deny:
+    - "scripts/**"
+    - "tests/visual/__screenshots__/**"
+
+constraints:
+  - "Tier detection inputs: prefers-reduced-motion, WebGL2 availability, a short GPU probe (renderer string + a timed draw), Save-Data, deviceMemory if present. Must resolve before first canvas frame and never flip mid-session."
+  - "Budgets may be tightened freely. Loosening any budget requires the ADR to say why."
+
+deliverables:
+  - "/lab/integration combining all lab winners"
+  - "Measurements table in the plan: Ryan's laptop, Ryan's phone (via Vercel preview + Safari Web Inspector or the in-page perf overlay), CI headless"
+  - "In-page perf overlay at ?perf=overlay (lab only) showing fps, p95 frame, tier — for measuring on the phone"
+  - "Updated docs/budgets.json"
+  - "CI: perf and visual jobs required on PRs (.github/workflows/verify.yml)"
+  - "docs/decisions/0005-tiers-and-budgets.md"
+
+done_when:
+  - check: "Each tier forced via ?tier= renders correctly at all checkpoints on /lab/integration"
+    evidence: "visual check"
+  - check: "Real-device numbers recorded for laptop and phone"
+    by: ryan
+  - check: "A deliberate regression (e.g. 4x shader iterations) fails CI perf; reverted"
+    evidence: "CI run link in plan"
+  - check: "ADR-0005 accepted"
+    by: ryan
+  - check: "pnpm verify --full --task=005 passes"
+    evidence: artifacts/verify.json
+
+escalate_when:
+  - Phone numbers miss budgets by more than 30% with the integration page — design-level tradeoff for Ryan
+
+budget:
+  max_retries_per_check: 3

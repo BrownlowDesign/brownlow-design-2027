@@ -1,0 +1,21 @@
+node_modules/
+.next/
+out/
+.vercel/
+.env
+.env.*
+!.env.example
+
+# harness outputs (evidence lives here during a task; paths get cited in plans)
+artifacts/
+test-results/
+playwright-report/
+
+# generated tokens are rebuilt on dev/build
+src/tokens/generated/
+src/styles/generated/
+src/gl/glsl/generated/
+
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
