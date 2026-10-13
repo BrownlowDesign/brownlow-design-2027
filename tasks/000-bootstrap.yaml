@@ -66,6 +66,8 @@ done_when:
     evidence: "command output in the plan"
   - check: "git diff shows no changes to denied paths"
     evidence: "pnpm verify --task=000 scope check"
+  - check: "GitHub Actions 'verify' workflow passes on the task 000 PR (checks job green; visual job may be skipped/pending until 001)"
+    evidence: "PR checks link in plan"
 
 escalate_when:
   - A harness script needs changing to work (scripts/** is out of scope — explain what and why)
