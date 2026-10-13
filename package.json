@@ -19,5 +19,35 @@
     "visual": "playwright test",
     "visual:update": "playwright test --update-snapshots",
     "visual:docker": "bash scripts/visual-docker.sh"
+  },
+  "dependencies": {
+    "next": "16.4.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "three": "^0.177.0",
+    "@react-three/fiber": "^9",
+    "@react-three/drei": "^10",
+    "zod": "^3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@bundled-es-modules/glob", "esbuild", "style-dictionary", "unrs-resolver"]
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.177.0",
+    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/turbopack": "^4",
+    "@playwright/test": "1.56.0",
+    "dependency-cruiser": "^16",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "style-dictionary": "^4",
+    "stylelint": "^16",
+    "tailwindcss": "^4",
+    "typescript": "^6",
+    "vitest": "^3",
+    "yaml": "^2"
   }
 }
