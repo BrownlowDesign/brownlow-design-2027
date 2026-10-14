@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import type { ShaderMaterial } from "three";
 import { clock } from "../motion/clock";
 import { useTier } from "../motion/tier";
+import { canvasSignals } from "./signals";
 
 const VERT = /* glsl */ `
 varying vec2 vUv;
@@ -16,6 +17,7 @@ void main() {
 
 const FRAG = /* glsl */ `
 uniform float uTime;
+uniform float uProgress;
 varying vec2 vUv;
 
 // Token values inlined — inline GLSL cannot include generated tokens.glsl
@@ -24,7 +26,8 @@ const vec3 COL_ACCENT  = vec3(1.0,    0.3529, 0.1216); // color.accent.default
 
 void main() {
   float v = 0.5 + 0.5 * sin(uTime * 0.8);
-  vec3 col = mix(COL_SURFACE, COL_ACCENT, v * 0.15);
+  // uProgress = 0 → identical to before; > 0 adds a visible accent tint
+  vec3 col = mix(COL_SURFACE, COL_ACCENT, v * 0.15 + uProgress * 0.25);
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -47,8 +50,12 @@ function PlaceholderQuad() {
   useFrame(() => {
     // reduced tier: shaders render static frames per MOTION.md
     if (matRef.current && tier === "full") {
-      (matRef.current.uniforms as { uTime: { value: number } }).uTime.value =
-        clock.now();
+      const u = matRef.current.uniforms as {
+        uTime: { value: number };
+        uProgress: { value: number };
+      };
+      u.uTime.value = clock.now();
+      u.uProgress.value = canvasSignals.getProgress();
     }
   });
 
@@ -59,7 +66,7 @@ function PlaceholderQuad() {
         ref={matRef}
         vertexShader={VERT}
         fragmentShader={FRAG}
-        uniforms={{ uTime: { value: 0 } }}
+        uniforms={{ uTime: { value: 0 }, uProgress: { value: 0 } }}
       />
     </mesh>
   );
