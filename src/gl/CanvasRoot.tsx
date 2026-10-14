@@ -42,6 +42,18 @@ function ClockDriver() {
   return null;
 }
 
+// Re-render the canvas whenever the progress signal changes, independent of
+// clock ticks. Prevents a race where setProgress fires after the last tick.
+function ProgressDriver() {
+  const { invalidate } = useThree();
+  useEffect(() => {
+    return canvasSignals.onProgress(() => {
+      invalidate();
+    });
+  }, [invalidate]);
+  return null;
+}
+
 function PlaceholderQuad() {
   const tier = useTier();
   const matRef = useRef<ShaderMaterial>(null);
@@ -89,6 +101,7 @@ export default function CanvasRoot() {
       }}
     >
       <ClockDriver />
+      <ProgressDriver />
       <PlaceholderQuad />
     </Canvas>
   );

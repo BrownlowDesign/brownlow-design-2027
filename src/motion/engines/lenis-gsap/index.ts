@@ -116,12 +116,18 @@ function buildTextReveal(root: HTMLElement): () => void {
   const io = new IntersectionObserver(
     (entries) => {
       if (entries[0]?.isIntersecting) {
-        gsap.to(el, {
-          opacity: 1,
-          y: 0,
-          duration: isHarness ? 0 : presets.duration.base / 1000,
-          ease: isHarness ? undefined : `cubic-bezier(${presets.easing.enter.join(",")})`,
-        });
+        if (isHarness) {
+          // gsap.set is synchronous — no tick needed. gsap.to(duration:0) requires
+          // gsap.updateRoot at time >= tween creation, which fails when the clock is frozen.
+          gsap.set(el, { opacity: 1, y: 0 });
+        } else {
+          gsap.to(el, {
+            opacity: 1,
+            y: 0,
+            duration: presets.duration.base / 1000,
+            ease: `cubic-bezier(${presets.easing.enter.join(",")})`,
+          });
+        }
         io.disconnect();
       }
     },
@@ -200,4 +206,12 @@ export function jumpToProgress(
   const totalH = document.documentElement.scrollHeight - window.innerHeight;
   window.scrollTo(0, pageP * totalH);
   applyScrollState(root, pageP, onPinProgress);
+
+  // Force text-reveal final state when page is past the reveal section.
+  // Mirrors B's jumpToProgress; necessary because the IO may not have fired
+  // before jumpToProgress is called in harness mode.
+  if (pageP >= STRIP_END) {
+    const el = root.querySelector<HTMLElement>("[data-scene='text-reveal']");
+    if (el) gsap.set(el, { opacity: 1, y: 0 });
+  }
 }

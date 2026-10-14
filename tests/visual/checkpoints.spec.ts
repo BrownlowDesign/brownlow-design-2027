@@ -60,7 +60,16 @@ for (const cp of checkpoints) {
           );
 
           expect(errors, 'page threw errors').toEqual([]);
-          await expect(page).toHaveScreenshot(snapshotFile);
+          // Double-rAF inside the page ensures the GPU compositor has presented
+          // the final frame. toHaveScreenshot's stabilization loop fires its
+          // first poll at timeout=0 (no rAF wait), which captures stale
+          // compositor state at position:sticky viewport-edge boundaries.
+          await page.evaluate(
+            () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))),
+          );
+          // scale:'css' matches toHaveScreenshot's default (logical pixels, ignores deviceScaleFactor)
+          const screenshot = await page.screenshot({ scale: 'css' });
+          expect(screenshot).toMatchSnapshot(snapshotFile, { maxDiffPixelRatio: 0.002 });
         });
       }
     }

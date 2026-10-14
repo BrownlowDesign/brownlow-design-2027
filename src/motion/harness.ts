@@ -74,7 +74,7 @@ export async function initHarness(
     progress: params.progress,
     scenes: [],
     scrollTo(p: number) {
-      window.scrollTo(0, p * document.documentElement.scrollHeight);
+      window.scrollTo(0, p * (document.documentElement.scrollHeight - window.innerHeight));
     },
     setTime(t: number) {
       clock.set(t);
