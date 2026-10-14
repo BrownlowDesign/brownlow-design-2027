@@ -40,11 +40,13 @@ function ClockDriver() {
 }
 
 function PlaceholderQuad() {
+  const tier = useTier();
   const matRef = useRef<ShaderMaterial>(null);
   const { viewport } = useThree();
 
   useFrame(() => {
-    if (matRef.current) {
+    // reduced tier: shaders render static frames per MOTION.md
+    if (matRef.current && tier === "full") {
       (matRef.current.uniforms as { uTime: { value: number } }).uTime.value =
         clock.now();
     }

@@ -21,6 +21,12 @@ Format:
   - `^(gsap(/.*)?|@gsap/.+|lenis(/.*)?|motion(/.*)?|framer-motion(/.*)?)$`
 - Encoded as: `tests/unit/lint-rules.test.ts` (8 cases); `eslint.harness.mjs` patched in task 001 (Ryan-approved scope exception).
 
+## 2026-10-13 — checkpoints-t-array-not-iterated
+- What happened: `tests/visual/checkpoints.json` specified `"t": [0, 1, 2.5]` (an array of clock times) but `checkpoints.spec.ts` typed `t` as `number` (scalar). `String([0,1,2.5])` became `"0,1,2.5"`, `parseFloat` in `initHarness` returned 0 for all three frames. Every CI baseline captured `t = 0.000` — the spec never verified frames differed, so all three "passed".
+- Failure type: weak_verification (snapshots passed but all showed the same frozen frame; no assertion that different `t` values produce different output)
+- Fix: treat `t` as a fourth iteration axis in the spec (array coerced to single-element when scalar); name files `__t-<value>`; add animation-integrity assertions: full tier → first/last frames NOT byte-identical; reduced tier → first/last frames ARE byte-identical.
+- Encoded as: `tests/visual/checkpoints.spec.ts` (array iteration + Buffer.equals assertions).
+
 ## 2026-10-13 — token-group-type-collision
 - What happened: `tokens/semantic.json` and `tokens/base/color.json` both declared `"$type": "color"` on the top-level `"color"` group. Style Dictionary v4 with `log.warnings: "error"` treats any duplicate path as a fatal collision, even when the values are identical. Blocked `pnpm tokens:build` for all of task 000.
 - Failure type: missing_guardrail
