@@ -25,8 +25,8 @@ const msg = {
 
 const importRules = ({ allowThree = false, allowMotionLibs = false } = {}) => {
   const patterns = [];
-  if (!allowThree) patterns.push({ group: ['three', 'three/*', '@react-three/*'], message: msg.three });
-  if (!allowMotionLibs) patterns.push({ group: ['gsap', 'gsap/*', '@gsap/*', 'lenis', 'lenis/*', 'motion', 'motion/*', 'framer-motion'], message: msg.motionLib });
+  if (!allowThree) patterns.push({ regex: '^(three(/.*)?|@react-three/.+)$', message: msg.three });
+  if (!allowMotionLibs) patterns.push({ regex: '^(gsap(/.*)?|@gsap/.+|lenis(/.*)?|motion(/.*)?|framer-motion(/.*)?)$', message: msg.motionLib });
   return patterns.length ? ['error', { patterns }] : 'off';
 };
 

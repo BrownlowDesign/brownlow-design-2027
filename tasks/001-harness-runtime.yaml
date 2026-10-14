@@ -1,7 +1,7 @@
 id: "001"
 title: Harness runtime — clock, harness mode, tiers, snap
 type: harness
-status: ready
+status: done
 depends_on: ["000"]
 goal: >
   Implement the motion runtime the rest of the site depends on: the single clock, harness mode URL params,
@@ -20,6 +20,7 @@ scope:
     - "src/gl/CanvasRoot.tsx"
     - "tests/unit/**"
     - "tests/visual/checkpoints.json"
+    - "tests/visual/checkpoints.spec.ts"
     - "plans/**"
   deny:
     - "scripts/**"

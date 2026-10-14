@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { MotionProvider } from "../motion/MotionProvider";
+import CanvasRoot from "../gl/CanvasRoot";
 
 export const metadata: Metadata = {
   title: "brownlow.design",
@@ -13,7 +15,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="min-h-full bg-surface text-ink font-sans">{children}</body>
+      <body className="min-h-full bg-surface text-ink font-sans">
+        <MotionProvider>
+          <CanvasRoot />
+          {children}
+        </MotionProvider>
+      </body>
     </html>
   );
 }
