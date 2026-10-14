@@ -12,7 +12,7 @@ export default function ScrollLabB() {
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || tier === "static") return;
+    if (!root || tier !== "full") return;
 
     const onPin = tier === "full" ? canvasSignals.setProgress : undefined;
 
@@ -28,5 +28,5 @@ export default function ScrollLabB() {
     return initNativeScroll(root, onPin);
   }, [tier]);
 
-  return <ScrollSceneLayout ref={rootRef} variant="b" />;
+  return <ScrollSceneLayout ref={rootRef} variant="b" tier={tier} />;
 }

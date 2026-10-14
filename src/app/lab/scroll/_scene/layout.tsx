@@ -29,11 +29,14 @@ const variantColor: Record<SceneVariant, string> = {
 
 interface Props {
   variant: SceneVariant;
+  tier?: "full" | "reduced" | "static";
 }
 
 export const ScrollSceneLayout = forwardRef<HTMLDivElement, Props>(
-  function ScrollSceneLayout({ variant }, ref) {
+  function ScrollSceneLayout({ variant, tier = "full" }, ref) {
     const vc = variantColor[variant];
+    // In non-full tiers the engine never runs, so elements must start visible.
+    const hidden = tier === "full";
     return (
       <div
         ref={ref}
@@ -99,7 +102,11 @@ export const ScrollSceneLayout = forwardRef<HTMLDivElement, Props>(
                   key={i}
                   data-scene="headline-line"
                   data-line={i}
-                  style={{ display: "block", opacity: 0, transform: "translateY(var(--space-6))" }}
+                  style={{
+                    display: "block",
+                    opacity: hidden ? 0 : 1,
+                    transform: hidden ? "translateY(var(--space-6))" : "none",
+                  }}
                 >
                   {text}
                 </span>
@@ -115,7 +122,7 @@ export const ScrollSceneLayout = forwardRef<HTMLDivElement, Props>(
                 height: "42%",
                 borderRadius: "var(--radius-md)",
                 background: vc,
-                opacity: 0,
+                opacity: hidden ? 0 : 1,
               }}
             />
 
@@ -128,7 +135,7 @@ export const ScrollSceneLayout = forwardRef<HTMLDivElement, Props>(
                 fontFamily: "var(--font-family-mono)",
                 fontSize: "var(--font-size-sm)",
                 color: "var(--color-text-muted)",
-                opacity: 0,
+                opacity: hidden ? 0 : 1,
               }}
             >
               scroll-driven · {VARIANT_LABEL[variant].toLowerCase()}
@@ -290,8 +297,8 @@ export const ScrollSceneLayout = forwardRef<HTMLDivElement, Props>(
           <p
             data-scene="text-reveal"
             style={{
-              opacity: 0,
-              transform: "translateY(20px)",
+              opacity: hidden ? 0 : 1,
+              transform: hidden ? "translateY(var(--space-6))" : "none",
               fontSize: "var(--font-size-2xl)",
               fontFamily: "var(--font-family-sans)",
               fontWeight: "var(--font-weight-medium)",

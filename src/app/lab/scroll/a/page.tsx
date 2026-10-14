@@ -12,7 +12,7 @@ export default function ScrollLabA() {
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || tier === "static") return;
+    if (!root || tier !== "full") return;
 
     const onPin = tier === "full" ? canvasSignals.setProgress : undefined;
 
@@ -25,5 +25,5 @@ export default function ScrollLabA() {
     return initLenisGsap(root, onPin);
   }, [tier]);
 
-  return <ScrollSceneLayout ref={rootRef} variant="a" />;
+  return <ScrollSceneLayout ref={rootRef} variant="a" tier={tier} />;
 }
