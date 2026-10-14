@@ -11,12 +11,12 @@ export default defineConfig({
   retries: 0,
   reporter: process.env.CI ? [['line'], ['html', { open: 'never' }]] : 'line',
   expect: {
-    toHaveScreenshot: { maxDiffPixelRatio: 0.002, animations: 'disabled', caret: 'hide' },
+    toHaveScreenshot: { maxDiffPixelRatio: 0.002, animations: 'allow', caret: 'hide' },
   },
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: 'retain-on-failure',
-    launchOptions: { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--font-render-hinting=none'] },
+    launchOptions: { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--font-render-hinting=none'] },
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 } },
