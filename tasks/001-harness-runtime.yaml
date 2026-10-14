@@ -20,6 +20,7 @@ scope:
     - "src/gl/CanvasRoot.tsx"
     - "tests/unit/**"
     - "tests/visual/checkpoints.json"
+    - "tests/visual/checkpoints.spec.ts"
     - "plans/**"
   deny:
     - "scripts/**"

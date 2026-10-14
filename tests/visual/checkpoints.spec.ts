@@ -95,7 +95,8 @@ for (const cp of checkpoints) {
         null,
         { timeout: 20_000 },
       );
-      return page.screenshot();
+      // Mask the clock label so the assertion proves canvas/motion differs, not just text.
+      return page.screenshot({ mask: [page.getByTestId('clock-value')] });
     };
 
     for (const tier of tiers.filter((t): t is 'full' | 'reduced' => t !== 'static')) {
