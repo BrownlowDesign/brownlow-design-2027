@@ -283,10 +283,13 @@ export const ScrollSceneLayout = forwardRef<HTMLDivElement, Props>(
         </section>
 
         {/* ── Section 4: Text reveal on enter (100vh) ─────────────────────── */}
+        {/* position+zIndex ensures this section stacks above the fixed canvas (zIndex:0) */}
         <section
           data-scene="text-reveal-outer"
           style={{
             height: "100vh",
+            position: "relative",
+            zIndex: 1,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

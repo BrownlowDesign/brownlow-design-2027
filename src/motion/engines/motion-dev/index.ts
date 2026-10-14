@@ -149,6 +149,10 @@ export function jumpToProgress(
   applyState(root, progressFromPage(pageP), onPinProgress);
   if (pageP >= 800 / 900) {
     const el = root.querySelector<HTMLElement>("[data-scene='text-reveal']");
-    if (el) animate(el, { opacity: 1, y: 0 }, { duration: presets.duration.instant / 1000 });
+    if (el) {
+      // Direct style assignment — animate() is async and may not settle before snap.
+      el.style.opacity = "1";
+      el.style.transform = "none";
+    }
   }
 }
