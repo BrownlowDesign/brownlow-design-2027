@@ -1,7 +1,7 @@
 id: "002"
 title: Lab — choose the scroll engine
 type: lab
-status: ready
+status: active
 depends_on: ["001"]
 goal: >
   Build the same scroll test scene three ways and choose the engine behind useScrollScene() with evidence.
