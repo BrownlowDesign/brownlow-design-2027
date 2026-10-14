@@ -50,7 +50,8 @@ export async function initHarness(
   clock.set(params.t);
 
   if (params.progress > 0) {
-    window.scrollTo(0, params.progress * document.documentElement.scrollHeight);
+    const totalH = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo(0, params.progress * totalH);
   }
 
   // Wait for fonts and images
