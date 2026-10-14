@@ -158,8 +158,8 @@ export function initLenisGsap(
       smoothWheel: true,
     });
 
-    const unsubClock = clock.subscribe((_t, dt) => {
-      lenis.raf(dt * 1000);
+    const unsubClock = clock.subscribe((t) => {
+      lenis.raf(t * 1000);
     });
 
     lenis.on("scroll", ({ scroll, limit }: { scroll: number; limit: number }) => {
