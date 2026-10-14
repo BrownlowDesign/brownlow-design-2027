@@ -117,12 +117,13 @@ export function initMotionScroll(
     io = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
+          const isHarness = new URLSearchParams(window.location.search).get("harness") === "1";
           animate(
             revealEl,
             { opacity: 1, y: 0 },
             {
-              duration: presets.duration.base / 1000,
-              ease: presets.easing.enter,
+              duration: isHarness ? 0 : presets.duration.base / 1000,
+              ease: isHarness ? undefined : presets.easing.enter,
             },
           );
           io?.disconnect();
@@ -147,12 +148,4 @@ export function jumpToProgress(
   const totalH = document.documentElement.scrollHeight - window.innerHeight;
   window.scrollTo(0, pageP * totalH);
   applyState(root, progressFromPage(pageP), onPinProgress);
-  if (pageP >= 800 / 900) {
-    const el = root.querySelector<HTMLElement>("[data-scene='text-reveal']");
-    if (el) {
-      // Direct style assignment — animate() is async and may not settle before snap.
-      el.style.opacity = "1";
-      el.style.transform = "none";
-    }
-  }
 }

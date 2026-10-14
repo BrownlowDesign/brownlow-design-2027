@@ -50,7 +50,7 @@ function initGsapClockBridge(): () => void {
 }
 
 // Pin-section: 3-stage scrubbed timeline (0→300vh)
-function buildPinTimeline(root: HTMLElement, onPinProgress?: (p: number) => void): () => void {
+function buildPinTimeline(root: HTMLElement, isHarness: boolean, onPinProgress?: (p: number) => void): () => void {
   const pinOuter = root.querySelector<HTMLElement>("[data-scene='pin-outer']");
   if (!pinOuter) return () => undefined;
 
@@ -60,7 +60,7 @@ function buildPinTimeline(root: HTMLElement, onPinProgress?: (p: number) => void
       start: "top top",
       end: "bottom top",
       pin: "[data-scene='pin-inner']",
-      scrub: 0.3,
+      scrub: isHarness ? true : 0.3,
       onUpdate(self) {
         onPinProgress?.(self.progress);
         const bar = root.querySelector<HTMLElement>("[data-scene='progress-bar']");
@@ -116,7 +116,7 @@ function buildParallax(root: HTMLElement): () => void {
 }
 
 // Horizontal strip
-function buildStrip(root: HTMLElement): () => void {
+function buildStrip(root: HTMLElement, isHarness: boolean): () => void {
   const outer = root.querySelector<HTMLElement>("[data-scene='strip-outer']");
   const track = root.querySelector<HTMLElement>("[data-scene='strip-track']");
   if (!outer || !track) return () => undefined;
@@ -127,7 +127,7 @@ function buildStrip(root: HTMLElement): () => void {
       start: "top top",
       end: "bottom top",
       pin: "[data-scene='strip-inner']",
-      scrub: 0.3,
+      scrub: isHarness ? true : 0.3,
     },
   });
   // ease omitted — scrub: true normalises progress; duration sets relative weight only
@@ -191,12 +191,13 @@ export function initLenisGsap(
     });
   }
 
-  const cleanupPin = buildPinTimeline(root, onPinProgress);
+  const cleanupPin = buildPinTimeline(root, isHarness, onPinProgress);
   const cleanupPar = buildParallax(root);
-  const cleanupStrip = buildStrip(root);
+  const cleanupStrip = buildStrip(root, isHarness);
   const cleanupReveal = buildTextReveal(root);
 
   ScrollTrigger.refresh();
+  if (isHarness) ScrollTrigger.update();
 
   return () => {
     cleanupPin();
