@@ -1,6 +1,6 @@
 # ADR-0003: Page transition approach
 
-- **Status:** proposed
+- **Status:** accepted
 - **Date:** 2026-10-15
 - **Task:** tasks/003-lab-page-transitions.yaml
 
@@ -32,20 +32,20 @@ React 19.3.0 ships `<ViewTransition>` and `viewTransitionName`; Motion 14 ships 
 
 ## Decision
 
-Recommend **B — Motion AnimatePresence**. Primary reason: iOS Safari support. The portfolio's audience skews heavily toward iOS (creative directors, recruiters viewing from iPhones) and iOS 16–17 is still a significant slice of Safari traffic. ViewTransition morphing falls back to a crossfade on older Safari — acceptable degradation — but the shared-element effect is the key differentiator of Variant A and it simply doesn't fire there.
+**A — ViewTransition API.** Ryan evaluated all three on Vercel and the native browser morph felt noticeably better than the JS-driven crossfade (Variant B) even after tuning B's timing and easing.
 
-Variant B's limitation is that it has no per-element shared-element morph. However, GSAP FLIP can be layered on top of AnimatePresence for specific elements if needed — it is not inherently excluded by choosing B. The crossfade itself is clean, browser-independent, and supported at all tiers.
+The iOS < 18 gap is accepted: on older Safari the browser silently falls back to a crossfade — no broken state, just no morph. By the time the portfolio is live iOS 18+ penetration will be high enough that the morph is the common case.
 
-Variant C (GSAP overlay) is the right pattern for heavy orchestration — progress-based cover-and-reveal — but adds complexity (timeline lifecycle, interrupted-nav cleanup) that isn't justified for the current use case. Worth revisiting if transitions need to synchronize with canvas shader sequences.
+Variant B (Motion AnimatePresence + SharedElement layoutId morph) is **preserved** at `/lab/transitions/b` — not deleted. Ryan may revisit it. Variant C (GSAP overlay) similarly preserved at `/lab/transitions/c`.
 
-Strongest counter: Variant A will be the natural choice once ViewTransition reaches ~95% browser coverage (expected 2027). If the portfolio is still active then, consider migrating.
+Strongest counter: B is the right call if the audience on iOS 17 is larger than expected. Reconsider after the first month of real traffic analytics.
 
-After Ryan accepts: keep `MotionPageTransition` + `TransitionLink` as the public API in `src/motion/transitions/`; delete the `GsapOverlay` and Variant A layout wiring from `app/lab/transitions/`; update `docs/MOTION.md` to document the public API.
+Public API in `src/motion/transitions/` for Variant A: standard Next.js `<Link>` with `<ViewTransition>` wrapping in layout; `viewTransitionName` CSS property on matched elements. No custom `TransitionLink` logic required. `useScrollScene()` is the public API for scroll scenes; unchanged.
 
 ## Consequences
 
-- `motion/react` is a permanent dep; `MotionPageTransition` is the only file that imports it in `src/motion/`.
-- Every route that wants a page transition wraps `{children}` in `<MotionPageTransition routeKey={pathname}>` via a `template.tsx`.
-- `canvasSignals.setTransition()` is called externally by whoever drives the transition; for Variant B the canvas signal is not yet wired — add a `useEffect` in `MotionPageTransition` that mirrors opacity to `uTransition` if canvas shader effects are needed.
+- Variant A's public API is `<ViewTransition>` in route layouts + `viewTransitionName` style property on matched elements. Zero JS overhead (React 19 built-in).
+- `MotionPageTransition`, `SharedElement`, `GsapOverlay`, `TransitionLink` remain in `src/motion/transitions/` for reference and potential future use — not deleted.
 - `useScrollScene()` is the public API for case-study scroll; it handles tier gating and harness determinism.
-- Revisit if: iOS Safari gains ViewTransition support above 95% usage, or if a case study requires synchronized canvas+DOM transition sequences (→ Variant C's overlay pattern).
+- Reduced tier: browser respects `prefers-reduced-motion` and skips the morph automatically — no app-level handling needed.
+- Revisit if: a case study needs canvas-synchronized transitions (→ Variant C); or if the morph needs to work on a pre-iOS-18 device (→ Variant B with layoutId).
