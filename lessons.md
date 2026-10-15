@@ -13,6 +13,12 @@ Format:
 
 <!-- entries below -->
 
+## 2026-10-14 — lenis-raf-delta-vs-absolute-time
+- What happened: `lenis.raf(time)` expects a monotonically increasing absolute timestamp (like `performance.now()`). The engine passed `dt * 1000` (frame delta, ~16ms each frame) instead of `t * 1000` (absolute clock time). Lenis computed near-zero or negative internal deltas → scroll barely moved, or moved jerkily. Harness tests never caught it because harness mode bypasses Lenis entirely (uses native scroll).
+- Failure type: weak_verification (harness mode doesn't exercise the Lenis code path)
+- Fix: `lenis.raf(t * 1000)` in `src/motion/engines/lenis-gsap/index.ts`. Any library that takes a timestamp argument (Lenis, GSAP, anime.js) needs absolute time, not delta.
+- Encoded as: commit 3b3f7cc; pending non-harness Playwright interaction test that actually scrolls Variant A and checks for smooth movement.
+
 ## 2026-10-14 — toHaveScreenshot-compositor-lag-sticky-boundary
 - What happened: `toHaveScreenshot` stabilisation loop fires its first poll at `timeout=0` (no rAF wait before capture). At exactly `progress=1.0` on desktop, the `position:sticky` strip-inner sits at `bottom=0` in viewport coordinates — the compositor hadn't yet presented the translated sticky state. Both snapshots in the loop captured the stale "05" card instead of the text-reveal section. `page.screenshot()` after a prior CDP round-trip (waitForFunction, or a separate evaluate) gave the compositor enough time and captured the correct state.
 - Failure type: weak_verification (test infrastructure, not app code)
