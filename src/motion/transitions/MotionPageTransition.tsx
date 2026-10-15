@@ -14,11 +14,11 @@ type Props = {
 // read a client-only value (window.location.search) without causing either a
 // hydration mismatch or a setState-in-effect lint error. Server snapshot = false;
 // client snapshot = actual harness param value.
-function useIsHarness(): boolean {
+function useHarnessSearch(): string {
   return useSyncExternalStore(
     () => () => {},  // no subscription needed (param never changes mid-session)
-    () => new URLSearchParams(window.location.search).get("harness") === "1",
-    () => false,
+    () => window.location.search,
+    () => "",
   );
 }
 
@@ -29,13 +29,31 @@ function useIsHarness(): boolean {
 // `animations: 'disabled'` flag. The page duration token is 900ms; initHarness
 // waits ~64ms → snap fires with content near-transparent. Fix: start fully
 // visible (initial + animate both opacity 1, duration 0) in harness mode.
+//
+// tp= param: freezes the crossfade at the given progress (0 = invisible, 1 = fully visible).
+// Used for case-1 transition snaps.
 export function MotionPageTransition({ routeKey, children }: Props) {
   const tier = useTier();
-  const isHarness = useIsHarness();
+  const search = useHarnessSearch();
+  const params = new URLSearchParams(search);
+  const isHarness = params.get("harness") === "1";
+  const tp = isHarness ? parseFloat(params.get("tp") ?? "NaN") : NaN;
+  const hasTp = !isNaN(tp);
 
   const duration = isHarness || tier === "static" ? 0 : presets.duration.page / 1000;
   const ease = tier === "reduced" ? "easeInOut" : presets.easing.enter;
   const initial = isHarness ? { opacity: 1 } : { opacity: 0 };
+
+  // tp= freeze: AnimatePresence initial={false} suppresses the initial prop on the
+  // first render, so we cannot use initial/animate to freeze opacity. Instead render
+  // a plain div with the exact opacity directly. This is only for harness snap capture.
+  if (hasTp) {
+    return (
+      <div style={{ position: "relative", opacity: tp }}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <AnimatePresence mode="wait" initial={false}>

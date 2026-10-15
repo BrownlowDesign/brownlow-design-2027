@@ -26,6 +26,42 @@
       "route": "/lab/scroll/a",
       "progress": [0, 0.25, 0.5, 0.75, 1],
       "tiers": ["full", "reduced", "static"]
+    },
+    {
+      "name": "transitions-a-index",
+      "route": "/lab/transitions/a",
+      "progress": [0],
+      "tiers": ["full", "reduced", "static"]
+    },
+    {
+      "name": "transitions-b-index",
+      "route": "/lab/transitions/b",
+      "progress": [0],
+      "tiers": ["full", "reduced", "static"]
+    },
+    {
+      "name": "transitions-c-index",
+      "route": "/lab/transitions/c",
+      "progress": [0],
+      "tiers": ["full", "reduced", "static"]
+    },
+    {
+      "name": "transitions-a-case1",
+      "route": "/lab/transitions/a/atlas",
+      "tp": [0, 0.25, 0.5, 0.75, 1],
+      "tiers": ["full"]
+    },
+    {
+      "name": "transitions-b-case1",
+      "route": "/lab/transitions/b/atlas",
+      "tp": [0, 0.25, 0.5, 0.75, 1],
+      "tiers": ["full"]
+    },
+    {
+      "name": "transitions-c-case1",
+      "route": "/lab/transitions/c/atlas",
+      "tp": [0, 0.25, 0.5, 0.75, 1],
+      "tiers": ["full"]
     }
   ]
 }

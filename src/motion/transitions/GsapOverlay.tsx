@@ -65,13 +65,22 @@ export function GsapOverlay({ children }: Props) {
     };
   }, [router, tier, duration, ease]);
 
-  // Animate in on route entry (skip in harness mode — snap needs final state)
+  // Animate in on route entry (skip in harness; if tp= present, freeze at that state)
   useEffect(() => {
     const cover = coverRef.current;
     if (!cover || tier === "static") return;
-    const isHarness = new URLSearchParams(window.location.search).get("harness") === "1";
-    if (isHarness) return;
-    gsap.fromTo(cover, { opacity: 1 }, { opacity: 0, duration: duration / 2, ease });
+    const p = new URLSearchParams(window.location.search);
+    if (p.get("harness") !== "1") {
+      gsap.fromTo(cover, { opacity: 1 }, { opacity: 0, duration: duration / 2, ease });
+      return;
+    }
+    // tp= freezes: 0→0.5 = cover fading in, 0.5→1 = cover fading out
+    const tpRaw = parseFloat(p.get("tp") ?? "NaN");
+    if (!isNaN(tpRaw)) {
+      const coverOpacity = tpRaw <= 0.5 ? tpRaw * 2 : (1 - tpRaw) * 2;
+      gsap.set(cover, { opacity: coverOpacity });
+      canvasSignals.setTransition(tpRaw < 1 ? tpRaw : 0);
+    }
   }, [pathname, tier, duration, ease]);
 
   return (
