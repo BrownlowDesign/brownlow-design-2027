@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import { SharedElement } from "../../../../motion/transitions/SharedElement";
 import { useScrollScene } from "../../../../motion/useScrollScene";
 import { canvasSignals } from "../../../../gl/signals";
 import type { Project } from "../_data/projects";
@@ -70,8 +71,8 @@ export function CaseStudy({ variant, project }: Props) {
         </Link>
       </div>
 
-      {/* Hero image — same placeholder as card. viewTransitionName matches
-          data-transition-hero in IndexGrid for Variant A shared-element morph. */}
+      {/* Hero — for variant B, uses SharedElement so Motion can morph it from
+          the card thumbnail (same layoutId) during the page transition. */}
       <section
         style={{
           height: "100vh",
@@ -82,21 +83,32 @@ export function CaseStudy({ variant, project }: Props) {
           position: "relative",
         }}
       >
-        <div
-          data-transition-hero={project.slug}
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: `hsl(${project.hue} 60% 55%)`,
-          }}
-        />
+        {variant === "b" ? (
+          <SharedElement
+            id={`hero-${project.slug}`}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: `hsl(${project.hue} 60% 55%)`,
+            }}
+          />
+        ) : (
+          <div
+            data-transition-hero={project.slug}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: `hsl(${project.hue} 60% 55%)`,
+            }}
+          />
+        )}
         <div style={{ position: "relative", zIndex: 1 }}>
           <p
             style={{
               fontFamily: "var(--font-family-mono)",
               fontSize: "var(--font-size-sm)",
               color: "var(--color-text-inverse)",
-            opacity: 0.7,
+              opacity: 0.7,
               marginBottom: "var(--space-2)",
             }}
           >
@@ -239,8 +251,6 @@ export function CaseStudy({ variant, project }: Props) {
           ))}
         </section>
 
-        {/* Horizontal strip section uses strip-track but maps to a shorter 100vh outer
-            since the full 300vh of lab 002 is overkill for a case-study page. */}
         <section data-scene="strip-outer" style={{ height: "100vh" }}>
           <div data-scene="strip-inner" style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden" }}>
             <div data-scene="strip-track" style={{ display: "flex", width: "500vw", height: "100%", willChange: "transform" }}>

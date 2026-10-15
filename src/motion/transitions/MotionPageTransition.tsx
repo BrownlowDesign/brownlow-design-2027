@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { presets } from "../presets";
 import { useTier } from "../tier";
 
@@ -55,18 +55,22 @@ export function MotionPageTransition({ routeKey, children }: Props) {
     );
   }
 
+  // LayoutGroup scopes the layoutId namespace so hero morphs don't bleed
+  // into other AnimatePresence trees on the same page (e.g. modals, drawers).
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={routeKey}
-        initial={initial}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration, ease }}
-        style={{ position: "relative" }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <LayoutGroup>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div
+          key={routeKey}
+          initial={initial}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration, ease }}
+          style={{ position: "relative" }}
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
+    </LayoutGroup>
   );
 }

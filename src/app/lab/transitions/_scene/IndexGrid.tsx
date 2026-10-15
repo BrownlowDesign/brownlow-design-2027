@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SharedElement } from "../../../../motion/transitions/SharedElement";
 import type { Project } from "../_data/projects";
 
 type Props = {
@@ -9,21 +10,6 @@ type Props = {
   // Variant A wraps each link in <ViewTransition> — passes element wrapper fn
   CardWrapper?: React.ComponentType<{ slug: string; children: React.ReactNode }>;
 };
-
-function PlaceholderImage({ hue, slug }: { hue: number; slug: string }) {
-  return (
-    <div
-      data-transition-hero={slug}
-      style={{
-        width: "100%",
-        aspectRatio: "4/3",
-        background: `hsl(${hue} 60% 55%)`,
-        borderRadius: "var(--radius-md)",
-        flexShrink: 0,
-      }}
-    />
-  );
-}
 
 function DefaultWrapper({ children }: { slug: string; children: React.ReactNode }) {
   return <>{children}</>;
@@ -82,7 +68,29 @@ export function IndexGrid({ variant, projects, CardWrapper = DefaultWrapper }: P
               style={{ display: "block", textDecoration: "none", color: "inherit" }}
             >
               <article>
-                <PlaceholderImage hue={project.hue} slug={project.slug} />
+                {variant === "b" ? (
+                  <SharedElement
+                    id={`hero-${project.slug}`}
+                    style={{
+                      width: "100%",
+                      aspectRatio: "4/3",
+                      background: `hsl(${project.hue} 60% 55%)`,
+                      borderRadius: "var(--radius-md)",
+                      flexShrink: 0,
+                    }}
+                  />
+                ) : (
+                  <div
+                    data-transition-hero={project.slug}
+                    style={{
+                      width: "100%",
+                      aspectRatio: "4/3",
+                      background: `hsl(${project.hue} 60% 55%)`,
+                      borderRadius: "var(--radius-md)",
+                      flexShrink: 0,
+                    }}
+                  />
+                )}
                 <div style={{ paddingTop: "var(--space-4)" }}>
                   <h2
                     style={{
