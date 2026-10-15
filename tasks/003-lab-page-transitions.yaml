@@ -1,7 +1,7 @@
 id: "003"
 title: Lab — choose the page transition approach
 type: lab
-status: ready
+status: active
 depends_on: ["002"]
 goal: >
   Prototype page transitions in the App Router and choose an approach with evidence. Output is ADR-0003
@@ -25,6 +25,7 @@ scope:
     - "package.json"
     - "pnpm-lock.yaml"
     - "plans/**"
+    - "tests/visual/__screenshots__/**/transitions-*.png"
   deny:
     - "scripts/**"
     - "tests/visual/__screenshots__/**"

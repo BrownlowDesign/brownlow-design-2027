@@ -18,6 +18,7 @@ void main() {
 const FRAG = /* glsl */ `
 uniform float uTime;
 uniform float uProgress;
+uniform float uTransition;
 varying vec2 vUv;
 
 // Token values inlined — inline GLSL cannot include generated tokens.glsl
@@ -27,7 +28,8 @@ const vec3 COL_ACCENT  = vec3(1.0,    0.3529, 0.1216); // color.accent.default
 void main() {
   float v = 0.5 + 0.5 * sin(uTime * 0.8);
   // uProgress = 0 → identical to before; > 0 adds a visible accent tint
-  vec3 col = mix(COL_SURFACE, COL_ACCENT, v * 0.15 + uProgress * 0.25);
+  // uTransition 0→1 shifts hue toward accent during page transition
+  vec3 col = mix(COL_SURFACE, COL_ACCENT, v * 0.15 + uProgress * 0.25 + uTransition * 0.35);
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -42,14 +44,15 @@ function ClockDriver() {
   return null;
 }
 
-// Re-render the canvas whenever the progress signal changes, independent of
-// clock ticks. Prevents a race where setProgress fires after the last tick.
+// Re-render the canvas whenever the progress or transition signals change,
+// independent of clock ticks. Prevents a race where the signal fires after the
+// last tick.
 function ProgressDriver() {
   const { invalidate } = useThree();
   useEffect(() => {
-    return canvasSignals.onProgress(() => {
-      invalidate();
-    });
+    const unsub1 = canvasSignals.onProgress(() => invalidate());
+    const unsub2 = canvasSignals.onTransition(() => invalidate());
+    return () => { unsub1(); unsub2(); };
   }, [invalidate]);
   return null;
 }
@@ -65,9 +68,11 @@ function PlaceholderQuad() {
       const u = matRef.current.uniforms as {
         uTime: { value: number };
         uProgress: { value: number };
+        uTransition: { value: number };
       };
       u.uTime.value = clock.now();
       u.uProgress.value = canvasSignals.getProgress();
+      u.uTransition.value = canvasSignals.getTransition();
     }
   });
 
@@ -78,7 +83,7 @@ function PlaceholderQuad() {
         ref={matRef}
         vertexShader={VERT}
         fragmentShader={FRAG}
-        uniforms={{ uTime: { value: 0 }, uProgress: { value: 0 } }}
+        uniforms={{ uTime: { value: 0 }, uProgress: { value: 0 }, uTransition: { value: 0 } }}
       />
     </mesh>
   );

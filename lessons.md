@@ -13,6 +13,12 @@ Format:
 
 <!-- entries below -->
 
+## 2026-10-15 — motion-div-stacking-below-fixed-canvas
+- What happened: Variant B's `<motion.div>` was a non-positioned element (level 3 in the CSS stacking order). The canvas is `position:fixed; z-index:0` (level 6). Level 6 paints on top of level 3, so the canvas (warm cream) covered all non-positioned page content. Variant A worked because `viewTransitionName` creates a stacking context (promotes to level 6). Variant C worked because `GsapOverlay` wraps children in `<div style={{ position: "relative" }}>`, making them a positioned element at level 6.
+- Failure type: missing_guardrail (no rule enforcing that page content wrappers must be positioned elements)
+- Fix: Add `style={{ position: "relative" }}` to the `motion.div` in `MotionPageTransition` so it participates in the stacking context at level 6, above the canvas. Any JS-driven animation wrapper that doesn't add `will-change` or `transform` will have this issue.
+- Encoded as: `src/motion/transitions/MotionPageTransition.tsx` (style prop on motion.div); pending guardrail or note in docs/WEBGL.md about canvas z-index and page content requirements.
+
 ## 2026-10-14 — lenis-raf-delta-vs-absolute-time
 - What happened: `lenis.raf(time)` expects a monotonically increasing absolute timestamp (like `performance.now()`). The engine passed `dt * 1000` (frame delta, ~16ms each frame) instead of `t * 1000` (absolute clock time). Lenis computed near-zero or negative internal deltas → scroll barely moved, or moved jerkily. Harness tests never caught it because harness mode bypasses Lenis entirely (uses native scroll).
 - Failure type: weak_verification (harness mode doesn't exercise the Lenis code path)
