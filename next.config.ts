@@ -1,7 +1,7 @@
 import path from "node:path";
 import type { NextConfig } from "next";
 
-const glslLoader = path.resolve("./src/gl/glsl-loader.mjs");
+const glslLoader = path.resolve("./src/gl/glsl-loader.cjs");
 
 const nextConfig: NextConfig = {
   turbopack: {

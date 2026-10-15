@@ -1,11 +1,10 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 // Webpack/Turbopack loader: resolves #include directives in GLSL files.
+// Must be CJS — Turbopack's loader runner calls require() on the loader file.
 // Resolution order: relative to the shader → src/gl/glsl/ → src/gl/glsl/generated/
-// Webpack injects `this.resourcePath`; Turbopack may not — falls back to GL dirs only.
-import { readFileSync, existsSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+const { readFileSync, existsSync } = require('node:fs');
+const { dirname, join } = require('node:path');
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 const GL_GLSL = join(__dirname, 'glsl');
 const GL_GLSL_GEN = join(__dirname, 'glsl', 'generated');
 
@@ -30,10 +29,8 @@ function resolveIncludes(src, filePath, seen = new Set()) {
   });
 }
 
-export default function glslLoader(source) {
-  // `this` is the webpack loader context; resourcePath is available in webpack.
-  // Turbopack may call without a context; use optional chaining for safety.
+module.exports = function glslLoader(source) {
   const filePath = this?.resourcePath ?? '';
   const resolved = resolveIncludes(source, filePath);
   return `export default ${JSON.stringify(resolved)};\n`;
-}
+};
