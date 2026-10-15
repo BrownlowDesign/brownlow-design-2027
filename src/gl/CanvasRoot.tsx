@@ -1,92 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import type { ShaderMaterial } from "three";
+import { useEffect } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { View } from "@react-three/drei";
 import { clock } from "../motion/clock";
 import { useTier } from "../motion/tier";
 import { canvasSignals } from "./signals";
 
-const VERT = /* glsl */ `
-varying vec2 vUv;
-void main() {
-  vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-const FRAG = /* glsl */ `
-uniform float uTime;
-uniform float uProgress;
-uniform float uTransition;
-varying vec2 vUv;
-
-// Token values inlined — inline GLSL cannot include generated tokens.glsl
-const vec3 COL_SURFACE = vec3(0.9569, 0.9529, 0.9412); // color.surface.default
-const vec3 COL_ACCENT  = vec3(1.0,    0.3529, 0.1216); // color.accent.default
-
-void main() {
-  float v = 0.5 + 0.5 * sin(uTime * 0.8);
-  // uProgress = 0 → identical to before; > 0 adds a visible accent tint
-  // uTransition 0→1 shifts hue toward accent during page transition
-  vec3 col = mix(COL_SURFACE, COL_ACCENT, v * 0.15 + uProgress * 0.25 + uTransition * 0.35);
-  gl_FragColor = vec4(col, 1.0);
-}
-`;
-
-function ClockDriver() {
-  const { invalidate } = useThree();
+function CanvasInternals() {
+  const invalidate = useThree((s) => s.invalidate);
   useEffect(() => {
-    return clock.subscribe(() => {
-      invalidate();
-    });
+    const u1 = clock.subscribe(() => invalidate());
+    const u2 = canvasSignals.onProgress(() => invalidate());
+    const u3 = canvasSignals.onTransition(() => invalidate());
+    return () => { u1(); u2(); u3(); };
   }, [invalidate]);
   return null;
-}
-
-// Re-render the canvas whenever the progress or transition signals change,
-// independent of clock ticks. Prevents a race where the signal fires after the
-// last tick.
-function ProgressDriver() {
-  const { invalidate } = useThree();
-  useEffect(() => {
-    const unsub1 = canvasSignals.onProgress(() => invalidate());
-    const unsub2 = canvasSignals.onTransition(() => invalidate());
-    return () => { unsub1(); unsub2(); };
-  }, [invalidate]);
-  return null;
-}
-
-function PlaceholderQuad() {
-  const tier = useTier();
-  const matRef = useRef<ShaderMaterial>(null);
-  const { viewport } = useThree();
-
-  useFrame(() => {
-    // reduced tier: shaders render static frames per MOTION.md
-    if (matRef.current && tier === "full") {
-      const u = matRef.current.uniforms as {
-        uTime: { value: number };
-        uProgress: { value: number };
-        uTransition: { value: number };
-      };
-      u.uTime.value = clock.now();
-      u.uProgress.value = canvasSignals.getProgress();
-      u.uTransition.value = canvasSignals.getTransition();
-    }
-  });
-
-  return (
-    <mesh scale={[viewport.width, viewport.height, 1]}>
-      <planeGeometry />
-      <shaderMaterial
-        ref={matRef}
-        vertexShader={VERT}
-        fragmentShader={FRAG}
-        uniforms={{ uTime: { value: 0 }, uProgress: { value: 0 }, uTransition: { value: 0 } }}
-      />
-    </mesh>
-  );
 }
 
 export default function CanvasRoot() {
@@ -105,9 +34,8 @@ export default function CanvasRoot() {
         zIndex: 0,
       }}
     >
-      <ClockDriver />
-      <ProgressDriver />
-      <PlaceholderQuad />
+      <CanvasInternals />
+      <View.Port />
     </Canvas>
   );
 }
