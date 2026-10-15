@@ -1,6 +1,6 @@
 # ADR-0002: Scroll engine
 
-- **Status:** proposed
+- **Status:** accepted
 - **Date:** 2026-10-13
 - **Task:** tasks/002-lab-scroll-engine.yaml
 
