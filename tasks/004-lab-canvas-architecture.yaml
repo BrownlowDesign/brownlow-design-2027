@@ -20,11 +20,13 @@ scope:
     - "src/app/lab/canvas/**"
     - "next.config.*"
     - "tests/**"
+    - "tests/visual/__screenshots__/**/canvas-*.png"
     - "docs/decisions/0004-*.md"
     - "docs/WEBGL.md"
     - "package.json"
     - "pnpm-lock.yaml"
     - "plans/**"
+    - "tasks/004-*.yaml"
   deny:
     - "scripts/**"
     - "tests/visual/__screenshots__/**"

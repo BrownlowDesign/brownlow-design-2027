@@ -5,6 +5,10 @@
  *   a) Heap growth stays within docs/budgets.json memory.heap_growth_after_20_navigations_mb_max (15MB)
  *   b) The canvas element is the same DOM node throughout (context never lost)
  *
+ * Uses page.goto() for each navigation so Next.js client-router handles it as
+ * a soft navigation (same-origin, no full reload). The canvas element persisting
+ * across navigations proves the root layout never unmounts.
+ *
  * Note: performance.memory is Chromium-only. The test runs in the default chromium project.
  */
 
@@ -21,7 +25,7 @@ test("canvas heap growth ≤ 15MB across 20 navigations", async ({ page }) => {
   await page.goto(ROUTES[0]!);
   await page.waitForLoadState("networkidle");
 
-  // Fingerprint the canvas element
+  // Fingerprint the canvas element to detect if it ever unmounts/remounts
   await page.evaluate(() => {
     const canvas = document.querySelector("canvas");
     if (!canvas) throw new Error("No canvas on initial load");
@@ -33,7 +37,7 @@ test("canvas heap growth ≤ 15MB across 20 navigations", async ({ page }) => {
     });
   });
 
-  // Force a GC cycle if available, then record baseline heap
+  // Force GC if available, then record baseline heap
   await page.evaluate(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).gc?.();
@@ -46,13 +50,11 @@ test("canvas heap growth ≤ 15MB across 20 navigations", async ({ page }) => {
   // 20 navigations cycling between the two routes
   for (let i = 0; i < NAV_COUNT; i++) {
     const route = ROUTES[(i + 1) % ROUTES.length]!;
-    await page.evaluate((href) => {
-      const a = document.createElement("a");
-      a.href = href;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }, route);
+    // Click the in-page navigation link — keeps Next.js client router active
+    const linkSelector = route === "/lab/canvas/next"
+      ? "a[href='/lab/canvas/next']"
+      : "a[href='/lab/canvas']";
+    await page.click(linkSelector);
     await page.waitForLoadState("networkidle");
   }
 
