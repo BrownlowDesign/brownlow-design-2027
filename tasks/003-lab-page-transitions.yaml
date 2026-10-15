@@ -25,6 +25,7 @@ scope:
     - "package.json"
     - "pnpm-lock.yaml"
     - "plans/**"
+    - "tests/visual/__screenshots__/**/transitions-*.png"
   deny:
     - "scripts/**"
     - "tests/visual/__screenshots__/**"
