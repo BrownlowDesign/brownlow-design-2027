@@ -40,7 +40,9 @@ export function MotionPageTransition({ routeKey, children }: Props) {
   const tp = isHarness ? parseFloat(params.get("tp") ?? "NaN") : NaN;
   const hasTp = !isNaN(tp);
 
-  const duration = isHarness || tier === "static" ? 0 : presets.duration.page / 1000;
+  // base (320ms) rather than page (900ms) — the layoutId morph drives the
+  // transition feel; a 900ms crossfade leaves the grid ghost visible too long.
+  const duration = isHarness || tier === "static" ? 0 : presets.duration.base / 1000;
   const ease = tier === "reduced" ? "easeInOut" : presets.easing.enter;
   const initial = isHarness ? { opacity: 1 } : { opacity: 0 };
 
