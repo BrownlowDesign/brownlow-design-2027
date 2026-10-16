@@ -169,13 +169,20 @@ test.describe("case-3 interrupted navigation", () => {
       await page.waitForLoadState("networkidle");
 
       // Click Atlas, then immediately click Drift before the transition completes.
-      // We do this with no await on the first click.
-      const atlasLink = page.getByText("Atlas").first();
-      const driftLink = page.getByText("Drift").first();
+      // Use role=link so we don't accidentally match an <h2> heading if navigation
+      // completes before the second click fires.
+      const atlasLink = page.getByRole("link", { name: "Atlas" }).first();
+      const driftLink = page.getByRole("link", { name: "Drift" }).first();
 
       await atlasLink.click({ delay: 0 });
-      // Fire the second click without waiting for navigation to settle
-      await driftLink.click({ delay: 0, force: true });
+      // Fire the second click without waiting for navigation to settle.
+      // If Atlas navigation wins the race (link gone), catch and continue — landing
+      // on atlas is still a valid outcome.
+      try {
+        await driftLink.click({ delay: 0, force: true, timeout: 3000 });
+      } catch {
+        // Atlas navigation won the race — that's a valid result for this test.
+      }
 
       // We should end up on either atlas or drift (whichever won the race),
       // but NOT on an error page and NOT hung.
