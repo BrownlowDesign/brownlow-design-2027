@@ -22,5 +22,11 @@
   },
   "memory": {
     "heap_growth_after_20_navigations_mb_max": 15
+  },
+  "headless_frame": {
+    "$comment": "CI-only thresholds for software-rendered headless Chromium. ~2× real-device due to lack of GPU. Used for regression detection (relative), not absolute truth.",
+    "p95_ms": 60,
+    "max_ms": 120,
+    "long_frames_over_32ms_max": 30
   }
 }
