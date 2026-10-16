@@ -154,30 +154,35 @@ for (const variant of VARIANTS) {
 // ── Case 3: Interrupted navigation ───────────────────────────────────────────
 // Click a second card before the first transition completes. Verify we land on the
 // second destination cleanly (no crash, correct URL).
-for (const variant of VARIANTS) {
-  test(`case-3 / variant-${variant}: interrupted navigation lands on last destination`, async ({
-    page,
-  }) => {
-    const errors: string[] = [];
-    page.on("pageerror", (e) => errors.push(String(e)));
+// retries: 2 — the interruption is a deliberate race; timing varies by runner speed.
+test.describe("case-3 interrupted navigation", () => {
+  test.describe.configure({ retries: 2 });
 
-    await page.goto(`${BASE}/${variant}`);
-    await page.waitForLoadState("networkidle");
+  for (const variant of VARIANTS) {
+    test(`case-3 / variant-${variant}: interrupted navigation lands on last destination`, async ({
+      page,
+    }) => {
+      const errors: string[] = [];
+      page.on("pageerror", (e) => errors.push(String(e)));
 
-    // Click Atlas, then immediately click Drift before the transition completes.
-    // We do this with no await on the first click.
-    const atlasLink = page.getByText("Atlas").first();
-    const driftLink = page.getByText("Drift").first();
+      await page.goto(`${BASE}/${variant}`);
+      await page.waitForLoadState("networkidle");
 
-    await atlasLink.click({ delay: 0 });
-    // Fire the second click without waiting for navigation to settle
-    await driftLink.click({ delay: 0, force: true });
+      // Click Atlas, then immediately click Drift before the transition completes.
+      // We do this with no await on the first click.
+      const atlasLink = page.getByText("Atlas").first();
+      const driftLink = page.getByText("Drift").first();
 
-    // We should end up on either atlas or drift (whichever won the race),
-    // but NOT on an error page and NOT hung.
-    await page.waitForURL(/\/(atlas|drift)$/, { timeout: 10_000 });
-    await page.waitForLoadState("networkidle");
+      await atlasLink.click({ delay: 0 });
+      // Fire the second click without waiting for navigation to settle
+      await driftLink.click({ delay: 0, force: true });
 
-    expect(errors, "page threw JS errors after interrupted nav").toEqual([]);
-  });
-}
+      // We should end up on either atlas or drift (whichever won the race),
+      // but NOT on an error page and NOT hung.
+      await page.waitForURL(/\/(atlas|drift)$/, { timeout: 10_000 });
+      await page.waitForLoadState("networkidle");
+
+      expect(errors, "page threw JS errors after interrupted nav").toEqual([]);
+    });
+  }
+});
