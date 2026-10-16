@@ -18,10 +18,5 @@ void main() {
   float pulse = sin(uTransition * 3.14159);
   base = mix(base, COLOR_SIGNAL_500, pulse * 0.35);
 
-  // REGRESSION TEST: 4x extra iterations to simulate a heavy shader — must be reverted
-  for (int i = 0; i < 400; i++) {
-    base += sin(float(i) * 0.01 + uTime) * 0.0001;
-  }
-
   gl_FragColor = vec4(base, 1.0);
 }
