@@ -1,6 +1,6 @@
 # ADR-0004: Canvas architecture — scene registry, View tracking, shader pipeline
 
-- **Status:** proposed
+- **Status:** accepted
 - **Date:** 2026-10-14
 - **Task:** tasks/004-lab-canvas-architecture.yaml
 

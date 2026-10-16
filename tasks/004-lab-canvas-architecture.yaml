@@ -1,7 +1,7 @@
 id: "004"
 title: Lab — persistent canvas, scene registry, shader pipeline
 type: lab
-status: active
+status: done
 depends_on: ["002", "003"]
 goal: >
   Turn the minimal CanvasRoot into the real architecture: scene registry, drei View tracking DOM elements,
