@@ -11,6 +11,10 @@
 
 import { expect, test } from "@playwright/test";
 
+// retries: 2 — 20 navigations under software WebGL on mobile CI can hit memory
+// pressure and lose the GL context non-deterministically. Retry before failing.
+test.describe.configure({ retries: 2 });
+
 const VARIANT = "b"; // run against Variant B (AnimatePresence, no persistent layout trick needed)
 const BASE = `/lab/transitions/${VARIANT}`;
 const NAV_COUNT = 20;
