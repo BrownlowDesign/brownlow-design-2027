@@ -169,15 +169,14 @@ test.describe("case-3 interrupted navigation", () => {
       await page.waitForLoadState("networkidle");
 
       // Click Atlas, then immediately click Drift before the transition completes.
-      // Use role=link so we don't accidentally match an <h2> heading if navigation
-      // completes before the second click fires.
-      const atlasLink = page.getByRole("link", { name: "Atlas" }).first();
-      const driftLink = page.getByRole("link", { name: "Drift" }).first();
+      // Use href selectors to target the actual <a> elements, not headings inside them.
+      const atlasLink = page.locator('a[href$="/atlas"]').first();
+      const driftLink = page.locator('a[href$="/drift"]').first();
 
       await atlasLink.click({ delay: 0 });
       // Fire the second click without waiting for navigation to settle.
-      // If Atlas navigation wins the race (link gone), catch and continue — landing
-      // on atlas is still a valid outcome.
+      // If Atlas navigation wins the race first (no drift link on case-study page),
+      // the 3s timeout fires and we catch — landing on atlas is still valid.
       try {
         await driftLink.click({ delay: 0, force: true, timeout: 3000 });
       } catch {
