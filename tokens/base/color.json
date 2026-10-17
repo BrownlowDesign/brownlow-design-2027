@@ -15,11 +15,6 @@
     },
     "signal": {
       "500": { "$value": "#0d9e47", "$description": "Accent: hsl(144 90% 39%) emerald. One accent only." }
-    },
-    "lab": {
-      "a": { "$value": "#3b82f6", "$description": "Lab-only: distinguishes variant A" },
-      "b": { "$value": "#10b981", "$description": "Lab-only: distinguishes variant B" },
-      "c": { "$value": "#f59e0b", "$description": "Lab-only: distinguishes variant C" }
     }
   }
 }
