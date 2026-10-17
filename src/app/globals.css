@@ -21,6 +21,6 @@
   --color-ink-inverse: var(--color-text-inverse);
   --color-accent: var(--color-accent-default);
   --color-border: var(--color-border-subtle);
-  --font-family-sans: var(--font-family-sans);
-  --font-family-mono: var(--font-family-mono);
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
 }
