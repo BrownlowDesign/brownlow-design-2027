@@ -7,7 +7,7 @@ uniform vec2 uResolution;
 varying vec2 vUv;
 
 void main() {
-  // Scroll progress: vertical gradient from surface to ink
+  // Gradient: surface (near-black) → ink.700
   vec3 base = mix(COLOR_SURFACE_DEFAULT, COLOR_INK_700, vUv.y * uProgress * 0.8);
 
   // Gentle wave driven by time (full tier only — reduced/static pass uTime=0)
