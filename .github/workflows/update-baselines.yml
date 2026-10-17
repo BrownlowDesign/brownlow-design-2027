@@ -22,7 +22,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Regenerate baselines
-        run: pnpm exec playwright test --update-snapshots
+        run: pnpm exec playwright test tests/visual/checkpoints.spec.ts --update-snapshots
         env:
           NEXT_PUBLIC_LAB: '1'
           HOME: /root

@@ -74,6 +74,18 @@
       "route": "/lab/canvas/next",
       "tp": [0, 0.5, 1],
       "tiers": ["full"]
+    },
+    {
+      "name": "integration-index",
+      "route": "/lab/integration",
+      "progress": [0, 0.5, 1],
+      "tiers": ["full", "reduced", "static"]
+    },
+    {
+      "name": "integration-detail",
+      "route": "/lab/integration/detail",
+      "progress": [0],
+      "tiers": ["full", "reduced", "static"]
     }
   ]
 }

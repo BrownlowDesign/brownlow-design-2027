@@ -29,6 +29,30 @@ jobs:
           name: verify
           path: artifacts/verify.json
 
+  perf:
+    runs-on: ubuntu-latest
+    needs: checks
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Perf regression gate
+        run: pnpm exec playwright test tests/e2e/perf-integration.spec.ts --project=desktop
+        env:
+          NEXT_PUBLIC_LAB: '1'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: perf-results
+          path: |
+            test-results/
+            playwright-report/
+
   visual:
     runs-on: ubuntu-latest
     needs: checks

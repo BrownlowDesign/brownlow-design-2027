@@ -45,6 +45,8 @@ export async function initHarness(
   tier: Tier
 ): Promise<void> {
   const params = parseHarnessParams(search);
+  // perf=live: freeze for initialization, then unfreeze so the clock drives real renders.
+  const perfLive = search.get("perf") === "live";
 
   clock.freeze();
   clock.set(params.t);
@@ -81,4 +83,8 @@ export async function initHarness(
       clock.tick(t);
     },
   };
+
+  // perf=live: unfreeze after initialization so the clock drives real renders.
+  // Harness mode stays active (scroll disabled, seeds fixed) but frame timing is real.
+  if (perfLive) clock.unfreeze();
 }

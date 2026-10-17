@@ -1,7 +1,7 @@
 id: "005"
 title: Lab — tiers, real-device budgets, CI regression gates
 type: lab
-status: ready
+status: done
 depends_on: ["004"]
 goal: >
   Harden tier detection and set budgets from measured reality. Combine 002–004 winners into one

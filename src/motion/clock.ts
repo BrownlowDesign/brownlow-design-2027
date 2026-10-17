@@ -60,4 +60,11 @@ export const clock = {
     _now = t;
     _subs.forEach((fn) => fn(_now, _delta));
   },
+
+  /** Harness perf=live only: unfreeze the clock so it drives real renders. */
+  unfreeze() {
+    _frozen = false;
+    _start = null; // reset wall-clock origin so time continues from _now
+    _ensureRunning();
+  },
 };
