@@ -35,7 +35,7 @@ constraints:
   - "Max 3 surface levels: default (near-black) → raised → overlay. No more."
   - "Exactly one accent hue. No second accent anywhere in the token set."
   - "Type scale strictly 1.25 ratio from the decided base size. No off-ratio sizes."
-  - "Font weight 'bold' maps to 600, not 700. Max 3 weights in use."
+  - "Font weight 'bold' maps to 700 (Satoshi ships 300/400/500/700/900 — no 600). Max 3 weights in use."
   - "Motion easing must be strong ease-out per DESIGN.md. No bounce or spring values."
   - "All generated files are outputs of pnpm tokens:build — never edit them directly."
   - "Typeface: Satoshi (Fontshare, free) for sans, JetBrains Mono for mono. Load via next/font/local — no CDN link tags."
@@ -44,7 +44,7 @@ constraints:
 deliverables:
   - "tokens/base/color.json — final dark palette (near-black, 3 surface levels, text tiers, accent)"
   - "tokens/semantic.json — semantic roles wired to final base values + surface.raised, surface.overlay"
-  - "tokens/base/type.json — chosen typeface, 1.25 scale from 17px desktop / 16px mobile, weights 400/500/600"
+  - "tokens/base/type.json — chosen typeface, 1.25 scale from 17px desktop / 16px mobile, weights 400/500/700"
   - "tokens/base/space.json — confirmed 8px grid with any needed additions"
   - "tokens/motion.json — DESIGN.md easings and duration ranges"
   - "src/app/layout.tsx — next/font loading for chosen typeface"
