@@ -24,9 +24,9 @@
     "heap_growth_after_20_navigations_mb_max": 15
   },
   "headless_frame": {
-    "$comment": "CI-only thresholds for software-rendered headless Chromium. ~2× real-device due to lack of GPU. Used for regression detection (relative), not absolute truth. Baseline measured at p95≈105ms, ~66 long frames on CI runner (2026-10-16); thresholds give ~20% headroom.",
-    "p95_ms": 120,
-    "max_ms": 200,
+    "$comment": "CI-only thresholds for software-rendered headless Chromium. ~2× real-device due to lack of GPU. Used for regression detection (relative), not absolute truth. Baseline: p95≈105ms on CI/Linux, ≈133ms on Mac; 150ms gives headroom over Mac while still catching regressions (~275ms with 400-iter shader).",
+    "p95_ms": 150,
+    "max_ms": 250,
     "long_frames_over_32ms_max": 80
   }
 }
