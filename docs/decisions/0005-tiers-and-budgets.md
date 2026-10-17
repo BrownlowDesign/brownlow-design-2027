@@ -1,6 +1,6 @@
 # ADR-0005: Tier detection strategy and performance budget methodology
 
-- **Status:** proposed
+- **Status:** accepted (2026-10-17)
 - **Date:** 2026-10-16
 - **Task:** tasks/005-lab-tiers-and-budgets.yaml
 
@@ -49,8 +49,17 @@ Accept all three decisions. Together they give a complete, testable definition o
 
 **Strongest argument against:** The GPU probe adds ~1ms to first render and could theoretically misfire on a legitimate slow-start device. The mitigation is that the 8ms threshold is generous; a real GPU that takes >8ms on a trivial draw should be treated as reduced anyway.
 
+## Real-device measurements (2026-10-17)
+
+| Device | fps | p95 frame | tier detected |
+|---|---|---|---|
+| Laptop | 60 | 17ms | full |
+| Phone | — | — | — (pending) |
+
+Laptop p95 of 17ms sits just under the `frame.p95_ms: 18.5ms` real-device budget — confirms the budget is well-calibrated. Phone measurement pending.
+
 ## Consequences
 
 - `src/motion/tier.ts` is the single source of truth for capability detection
 - `docs/budgets.json` carries both real-device and headless budgets; neither set may be loosened without updating this ADR
-- Real-device numbers (Ryan's laptop + phone) to be added to this ADR after measurement
+- Phone real-device numbers to be added to this ADR and `mobile_frame.*` confirmed once measured
