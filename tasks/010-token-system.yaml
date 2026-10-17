@@ -1,0 +1,71 @@
+id: "010"
+title: Real token system — color, type, space, motion
+type: feature
+status: active
+depends_on: ["005"]
+goal: >
+  Replace all placeholder tokens with final values from docs/DESIGN.md. After this task:
+  no generated file contains a PLACEHOLDER comment; color is dark near-black with one accent;
+  type is set on the chosen typeface at a 1.25 scale from 17px; space is on an 8px grid;
+  motion easings and durations match the design personality. Every component and shader
+  already consumes tokens — no component changes needed, only token values change.
+
+read_first:
+  - docs/TOKENS.md
+  - docs/DESIGN.md
+
+scope:
+  allow:
+    - "tokens/**"
+    - "src/styles/generated/**"
+    - "src/tokens/generated/**"
+    - "src/gl/glsl/generated/**"
+    - "src/app/layout.tsx"
+    - "src/styles/globals.css"
+    - "tailwind.config.ts"
+    - "tests/visual/__screenshots__/**"
+    - "plans/**"
+  deny:
+    - "src/components/**"
+    - "src/gl/scenes/**"
+    - "src/app/lab/**"
+
+constraints:
+  - "Dark-first: color.surface.default must be the near-black base, not a light value."
+  - "Max 3 surface levels: default (near-black) → raised → overlay. No more."
+  - "Exactly one accent hue. No second accent anywhere in the token set."
+  - "Type scale strictly 1.25 ratio from the decided base size. No off-ratio sizes."
+  - "Font weight 'bold' maps to 600, not 700. Max 3 weights in use."
+  - "Motion easing must be strong ease-out per DESIGN.md. No bounce or spring values."
+  - "All generated files are outputs of pnpm tokens:build — never edit them directly."
+  - "Typeface: Satoshi (Fontshare, free) for sans, JetBrains Mono for mono. Load via next/font/local — no CDN link tags."
+  - "Accent: hsl(144, 90%, 39%) — one emerald green. No second accent anywhere."
+
+deliverables:
+  - "tokens/base/color.json — final dark palette (near-black, 3 surface levels, text tiers, accent)"
+  - "tokens/semantic.json — semantic roles wired to final base values + surface.raised, surface.overlay"
+  - "tokens/base/type.json — chosen typeface, 1.25 scale from 17px desktop / 16px mobile, weights 400/500/600"
+  - "tokens/base/space.json — confirmed 8px grid with any needed additions"
+  - "tokens/motion.json — DESIGN.md easings and duration ranges"
+  - "src/app/layout.tsx — next/font loading for chosen typeface"
+  - "Updated visual baselines (new color scheme)"
+
+done_when:
+  - check: "pnpm tokens:build succeeds and no generated file contains the word PLACEHOLDER"
+    evidence: "grep -r PLACEHOLDER src/styles/generated src/tokens/generated src/gl/glsl/generated — 0 hits"
+  - check: "pnpm verify passes (lint confirms no raw colors or px values outside tokens/)"
+    evidence: "artifacts/verify.json status=pass"
+  - check: "Body text contrast ≥ 4.5:1 and display text ≥ 3.0:1 at every visual checkpoint"
+    evidence: "axe-core or manual measurement recorded in plan"
+  - check: "Visual checkpoints updated and appearance approved"
+    by: ryan
+  - check: "Font loads from next/font (no external CDN requests in network panel)"
+    by: ryan
+
+escalate_when:
+  - "Söhne chosen but no license file present in the repo — stop before adding the font files"
+  - "Contrast target can't be met without changing the rubric in docs/DESIGN.md — Ryan decides"
+  - "Any existing component uses a value that the new token set doesn't provide (missing semantic token)"
+
+budget:
+  max_retries_per_check: 3
