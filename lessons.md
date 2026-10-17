@@ -13,6 +13,12 @@ Format:
 
 <!-- entries below -->
 
+## 2026-10-16 — glsl-loader-missing-addDependency
+- What happened: `src/gl/glsl-loader.cjs` resolved `#include "tokens.glsl"` via `readFileSync` but never called `this.addDependency(found)`. webpack/Turbopack didn't register `tokens.glsl` as a module dependency of any importing shader. After `pnpm tokens:build` regenerated `tokens.glsl`, the dev server kept serving the old compiled shader bundle (old light-gray colors). Correct values existed on disk, but the runtime rendered stale output.
+- Failure type: bad_tool (loader was missing a required webpack API call)
+- Fix: Added `const addDep = this?.addDependency?.bind(this) ?? (() => {})` in `glslLoader()` and pass it to `resolveIncludes`, which calls `addDep(found)` for every resolved include. webpack/Turbopack now invalidates the shader module whenever any included file changes.
+- Encoded as: commit 21d7280 (`src/gl/glsl-loader.cjs`)
+
 ## 2026-10-15 — motion-div-stacking-below-fixed-canvas
 - What happened: Variant B's `<motion.div>` was a non-positioned element (level 3 in the CSS stacking order). The canvas is `position:fixed; z-index:0` (level 6). Level 6 paints on top of level 3, so the canvas (warm cream) covered all non-positioned page content. Variant A worked because `viewTransitionName` creates a stacking context (promotes to level 6). Variant C worked because `GsapOverlay` wraps children in `<div style={{ position: "relative" }}>`, making them a positioned element at level 6.
 - Failure type: missing_guardrail (no rule enforcing that page content wrappers must be positioned elements)
