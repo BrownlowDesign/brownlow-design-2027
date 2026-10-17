@@ -1,19 +1,24 @@
 {
   "color": {
     "surface": {
-      "default": { "$type": "color", "$value": "{color.ink.50}", "$description": "Page background" },
-      "inverse": { "$type": "color", "$value": "{color.ink.900}", "$description": "Dark sections, behind shaders" }
+      "default":  { "$type": "color", "$value": "{color.ink.900}", "$description": "Page base — near-black" },
+      "raised":   { "$type": "color", "$value": "{color.ink.600}", "$description": "Cards, code blocks — one step above base" },
+      "overlay":  { "$type": "color", "$value": "{color.ink.500}", "$description": "Modals, dropdowns — two steps above base" },
+      "inverse":  { "$type": "color", "$value": "{color.ink.50}",  "$description": "Light surface (rare use: contrast sections)" }
     },
     "text": {
-      "default": { "$type": "color", "$value": "{color.ink.900}" },
-      "muted": { "$type": "color", "$value": "{color.ink.500}" },
-      "inverse": { "$type": "color", "$value": "{color.ink.50}" }
+      "default":   { "$type": "color", "$value": "{color.ink.50}",  "$description": "Primary body and display text, ~92% white" },
+      "secondary": { "$type": "color", "$value": "{color.ink.100}", "$description": "Supporting text, ~64% white" },
+      "tertiary":  { "$type": "color", "$value": "{color.ink.200}", "$description": "Metadata labels, timestamps — use sparingly" },
+      "muted":     { "$type": "color", "$value": "{color.ink.300}", "$description": "Disabled or placeholder text" },
+      "inverse":   { "$type": "color", "$value": "{color.ink.900}", "$description": "Dark text on light inverse surfaces" }
     },
     "accent": {
-      "default": { "$type": "color", "$value": "{color.signal.500}" }
+      "default": { "$type": "color", "$value": "{color.signal.500}", "$description": "Interactive states, key metrics, shader highlight" }
     },
     "border": {
-      "subtle": { "$type": "color", "$value": "{color.ink.100}" }
-    }
+      "subtle": { "$type": "color", "$value": "{color.ink.400}", "$description": "Dividers and hairlines" },
+      "default":{ "$type": "color", "$value": "{color.ink.300}", "$description": "Component outlines" }
+    },
   }
 }

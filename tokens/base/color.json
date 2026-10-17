@@ -1,17 +1,20 @@
 {
   "color": {
     "$type": "color",
-    "$description": "PLACEHOLDER palette for the motion lab. Replaced in task 010 from docs/DESIGN.md.",
+    "$description": "Dark-first palette. ink.900 is near-black (page base); ink.50 is near-white (primary text). signal.500 is the single accent.",
     "ink": {
-      "50": { "$value": "#f4f3f0" },
-      "100": { "$value": "#e6e4df" },
-      "300": { "$value": "#a8a49b" },
-      "500": { "$value": "#6b675f" },
-      "700": { "$value": "#34322e" },
-      "900": { "$value": "#121110" }
+      "50":  { "$value": "#ECEEF0", "$description": "Primary text — near-white (~92% luminance)" },
+      "100": { "$value": "#C8CDD3", "$description": "Secondary text (~64% luminance)" },
+      "200": { "$value": "#9EA4AC", "$description": "Tertiary / metadata text" },
+      "300": { "$value": "#737980", "$description": "Muted / disabled" },
+      "400": { "$value": "#4A5058", "$description": "Subtle borders, dividers" },
+      "500": { "$value": "#2E3338", "$description": "Surface overlay" },
+      "600": { "$value": "#1E2226", "$description": "Surface raised" },
+      "700": { "$value": "#14171A", "$description": "Surface default (page base step)" },
+      "900": { "$value": "#0B0C0E", "$description": "Page base — near-black, never pure #000" }
     },
     "signal": {
-      "500": { "$value": "#ff5a1f" }
+      "500": { "$value": "#0d9e47", "$description": "Accent: hsl(144 90% 39%) emerald. One accent only." }
     },
     "lab": {
       "a": { "$value": "#3b82f6", "$description": "Lab-only: distinguishes variant A" },

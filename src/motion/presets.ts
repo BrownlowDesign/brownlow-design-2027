@@ -1,15 +1,16 @@
 import {
-  MotionDurationFast,
-  MotionDurationBase,
-  MotionDurationSlow,
-  MotionDurationPage,
   MotionDurationInstant,
+  MotionDurationUiFast,
+  MotionDurationUi,
+  MotionDurationReveal,
+  MotionDurationRevealSlow,
+  MotionDurationPage,
   MotionStaggerLine,
   MotionStaggerItem,
   MotionEasingStandard,
   MotionEasingEnter,
   MotionEasingExit,
-  MotionEasingWeighted,
+  MotionEasingUi,
 } from "../tokens/generated/tokens.js";
 
 function ms(token: string): number {
@@ -20,18 +21,19 @@ export type EasingTuple = [number, number, number, number];
 
 export const presets = {
   duration: {
-    instant: ms(MotionDurationInstant),
-    fast: ms(MotionDurationFast),
-    base: ms(MotionDurationBase),
-    slow: ms(MotionDurationSlow),
-    page: ms(MotionDurationPage),
-    staggerLine: ms(MotionStaggerLine),
-    staggerItem: ms(MotionStaggerItem),
+    instant:      ms(MotionDurationInstant),
+    fast:         ms(MotionDurationUiFast),
+    base:         ms(MotionDurationUi),
+    reveal:       ms(MotionDurationReveal),
+    revealSlow:   ms(MotionDurationRevealSlow),
+    page:         ms(MotionDurationPage),
+    staggerLine:  ms(MotionStaggerLine),
+    staggerItem:  ms(MotionStaggerItem),
   },
   easing: {
     standard: MotionEasingStandard as EasingTuple,
-    enter: MotionEasingEnter as EasingTuple,
-    exit: MotionEasingExit as EasingTuple,
-    weighted: MotionEasingWeighted as EasingTuple,
+    enter:    MotionEasingEnter as EasingTuple,
+    exit:     MotionEasingExit as EasingTuple,
+    ui:       MotionEasingUi as EasingTuple,
   },
 } as const;

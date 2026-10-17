@@ -2,30 +2,33 @@
   "motion": {
     "duration": {
       "$type": "duration",
-      "$description": "PLACEHOLDER. Motion personality is defined in docs/DESIGN.md (task 010).",
+      "$description": "DESIGN.md: UI 150-250ms, content reveals 400-700ms, nothing >1s except scroll-scrubbed storytelling.",
       "instant": { "$value": "0ms" },
-      "fast": { "$value": "160ms" },
-      "base": { "$value": "320ms" },
-      "slow": { "$value": "640ms" },
-      "page": { "$value": "900ms", "$description": "Page transitions" }
+      "ui-fast": { "$value": "150ms", "$description": "Micro-interactions, hover" },
+      "ui":      { "$value": "220ms", "$description": "Standard UI transitions" },
+      "reveal":  { "$value": "500ms", "$description": "Content reveal animations" },
+      "reveal-slow": { "$value": "700ms", "$description": "Large surface reveals" },
+      "page":    { "$value": "900ms", "$description": "Page transitions (scroll-scrubbed, may exceed 1s)" }
     },
     "easing": {
       "$type": "cubicBezier",
-      "standard": { "$value": [0.2, 0, 0, 1] },
-      "enter": { "$value": [0, 0, 0.2, 1] },
-      "exit": { "$value": [0.4, 0, 1, 1] },
-      "weighted": { "$value": [0.7, 0, 0.2, 1], "$description": "Slow-in, slow-out for large surfaces" }
+      "$description": "DESIGN.md: strong ease-out. No bounce, no spring, no overshoot.",
+      "standard": { "$value": [0.22, 1, 0.36, 1], "$description": "Primary — strong ease-out for all content motion" },
+      "enter":    { "$value": [0.22, 1, 0.36, 1], "$description": "Enter: same strong ease-out" },
+      "exit":     { "$value": [0.55, 0, 1, 0.45], "$description": "Exit: ease-in, content leaving" },
+      "ui":       { "$value": [0.2, 0, 0, 1],    "$description": "Subtle UI state changes (hover, focus)" }
     },
     "stagger": {
       "$type": "duration",
-      "line": { "$value": "60ms" },
-      "item": { "$value": "40ms" }
+      "$description": "DESIGN.md: ≤60ms between items, max 6 staggered items per group.",
+      "line": { "$value": "60ms", "$description": "Between headline lines" },
+      "item": { "$value": "40ms", "$description": "Between list items or cards" }
     }
   },
   "gl": {
     "dpr": {
       "$type": "number",
-      "max": { "$value": 2 },
+      "max":        { "$value": 2 },
       "max-mobile": { "$value": 1.5 }
     }
   }

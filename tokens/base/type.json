@@ -2,27 +2,41 @@
   "font": {
     "family": {
       "$type": "fontFamily",
-      "sans": { "$value": ["Inter", "system-ui", "sans-serif"], "$description": "PLACEHOLDER" },
-      "mono": { "$value": ["JetBrains Mono", "ui-monospace", "monospace"], "$description": "PLACEHOLDER" }
+      "sans": { "$value": ["Satoshi", "system-ui", "sans-serif"], "$description": "Display and body. Load via next/font/local from Fontshare." },
+      "mono": { "$value": ["JetBrains Mono", "ui-monospace", "monospace"], "$description": "Metadata, labels, metrics, dates. Load via next/font/google." }
     },
     "size": {
       "$type": "dimension",
-      "$description": "PLACEHOLDER 1.25 ratio from 16px.",
-      "sm": { "$value": "13px" },
-      "base": { "$value": "16px" },
-      "lg": { "$value": "20px" },
-      "xl": { "$value": "25px" },
-      "2xl": { "$value": "31px" },
-      "3xl": { "$value": "39px" },
-      "4xl": { "$value": "49px" },
-      "5xl": { "$value": "61px" },
-      "6xl": { "$value": "76px" }
+      "$description": "1.25 major-third ratio. Base 17px desktop (16px mobile via CSS clamp or media query). sm=13px covers secondary labels below base.",
+      "sm":  { "$value": "13px" },
+      "base":{ "$value": "17px" },
+      "lg":  { "$value": "21px" },
+      "xl":  { "$value": "27px" },
+      "2xl": { "$value": "33px" },
+      "3xl": { "$value": "42px" },
+      "4xl": { "$value": "52px" },
+      "5xl": { "$value": "65px" },
+      "6xl": { "$value": "82px" }
     },
     "weight": {
       "$type": "fontWeight",
       "regular": { "$value": 400 },
-      "medium": { "$value": 500 },
-      "bold": { "$value": 700 }
+      "medium":  { "$value": 500 },
+      "bold":    { "$value": 700, "$description": "700 — Satoshi ships 300/400/500/700/900; no 600. Max 3 weights still satisfied." }
+    },
+    "tracking": {
+      "$type": "dimension",
+      "$description": "Letter-spacing. Display uses tight negative tracking; body uses default.",
+      "tight":   { "$value": "-0.02em", "$description": "Display headlines (−2%)" },
+      "tighter":  { "$value": "-0.03em", "$description": "Large display (−3%)" },
+      "normal":  { "$value": "0em" },
+      "wide":    { "$value": "0.06em", "$description": "Mono labels and ALL CAPS metadata only" }
+    },
+    "leading": {
+      "$type": "number",
+      "$description": "Line height multipliers.",
+      "display": { "$value": 1.1,  "$description": "Headlines 1.0–1.15" },
+      "body":    { "$value": 1.55, "$description": "Body copy 1.5–1.6" }
     }
   }
 }

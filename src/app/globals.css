@@ -1,10 +1,22 @@
 @import "tailwindcss";
 @import "../styles/generated/tokens.css";
 
+/* Wire next/font CSS variables into the token font-family slots.
+   next/font/local injects --font-satoshi with a scoped font name;
+   next/font/google injects --font-jetbrains-mono. */
+:root {
+  --font-family-sans: var(--font-satoshi), system-ui, sans-serif;
+  --font-family-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
 @theme inline {
   --color-surface: var(--color-surface-default);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-overlay: var(--color-surface-overlay);
   --color-surface-inverse: var(--color-surface-inverse);
   --color-ink: var(--color-text-default);
+  --color-ink-secondary: var(--color-text-secondary);
+  --color-ink-tertiary: var(--color-text-tertiary);
   --color-ink-muted: var(--color-text-muted);
   --color-ink-inverse: var(--color-text-inverse);
   --color-accent: var(--color-accent-default);

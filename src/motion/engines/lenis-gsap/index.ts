@@ -153,7 +153,7 @@ export function initLenisGsap(
   if (!isHarness) {
     // Non-harness: Lenis drives smooth scroll; its scroll event drives animation.
     const lenis = new Lenis({
-      duration: presets.duration.slow / 1000,
+      duration: presets.duration.reveal / 1000,
       gestureOrientation: "vertical",
       smoothWheel: true,
     });
